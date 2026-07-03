@@ -23,7 +23,7 @@
 
 ## メモリ管理
 - 新しい知識・教訓を記録する際は `.agent/memory/MEMORY.md` を更新
-- 既存のMEMORY.mdを更新する前に、現在のファイルを`.agent/memory/YYYY-MM-DD.md` にアーカイブしてから新規作成
+- 既存のMEMORY.mdを更新する前に、現在のファイルを`.agent/memory/archive/YYYY-MM-DD.md` にアーカイブしてから新規作成
 - ローカルの自動メモリ機能（~/.claude/ 配下）は使用しない
 - MEMORY.mdは200行以内を維持すること
 - 本ファイルと重複する内容はMEMORY.mdに書かない
@@ -31,7 +31,7 @@
 ## ハンドオフ管理
 - ハンドオフは `/handoff` コマンドで作成（Claude Codeの場合）
 - 保存先は `.agent/handoff/HANDOFF.md`（固定名）
-- 作成時は既存ファイルを `.agent/handoff/YYYY-MM-DD-HHMM.md` にリネームしてからHANDOFF.mdを新規作成する
+- 作成時は既存ファイルを `.agent/handoff/archive/YYYY-MM-DD-HHMM.md` にリネームしてからHANDOFF.mdを新規作成する
 - 時刻はローカル時刻・24時間表記
 
 ## 仕様駆動開発（SDD）ルール

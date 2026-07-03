@@ -2,7 +2,7 @@
 
 1. `.agent/handoff/HANDOFF.md` が存在する場合：
    - そのファイルの更新日時（ローカル時刻）を取得
-   - `.agent/handoff/YYYY-MM-DD-HHMM.md` にリネーム
+   - `.agent/handoff/archive/YYYY-MM-DD-HHMM.md` にリネーム
 
 2. 新しい `.agent/handoff/HANDOFF.md` を以下のテンプレートに従って作成し、完了後「HANDOFF.mdを作成しました」と報告してください。各項目には、現在までのチャット履歴や作業内容からAI自身が自己の行動を要約し、具体的な内容を記入してから保存してください。単なる空のテンプレートのまま保存してはいけません。
 

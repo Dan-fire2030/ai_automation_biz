@@ -1,0 +1,1028 @@
+<title>AI導入支援ビジネス 全体ロードマップ</title>
+<style>
+  :root {
+    --ground: #FAF9F5;
+    --surface: #FFFFFF;
+    --ink: #1F242E;
+    --ink-2: #59606E;
+    --ink-3: #8B909B;
+    --line: #E4E1D8;
+    --accent: #2F64AD;
+    --accent-soft: #EDF2F9;
+    --flow: #2F64AD;
+    --stock: #A8731A;
+    --stock-soft: #F7F0E2;
+    --stamp: #B5402F;
+    --warn-bg: #FBF3EC;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #12151B;
+      --surface: #171B22;
+      --ink: #E8E6E0;
+      --ink-2: #A2A8B3;
+      --ink-3: #6E747F;
+      --line: #2C323D;
+      --accent: #4E8BD9;
+      --accent-soft: #1D2735;
+      --flow: #4E8BD9;
+      --stock: #BA8828;
+      --stock-soft: #2A2416;
+      --stamp: #D9604C;
+      --warn-bg: #271D18;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #12151B;
+    --surface: #171B22;
+    --ink: #E8E6E0;
+    --ink-2: #A2A8B3;
+    --ink-3: #6E747F;
+    --line: #2C323D;
+    --accent: #4E8BD9;
+    --accent-soft: #1D2735;
+    --flow: #4E8BD9;
+    --stock: #BA8828;
+    --stock-soft: #2A2416;
+    --stamp: #D9604C;
+    --warn-bg: #271D18;
+  }
+  :root[data-theme="light"] {
+    --ground: #FAF9F5;
+    --surface: #FFFFFF;
+    --ink: #1F242E;
+    --ink-2: #59606E;
+    --ink-3: #8B909B;
+    --line: #E4E1D8;
+    --accent: #2F64AD;
+    --accent-soft: #EDF2F9;
+    --flow: #2F64AD;
+    --stock: #A8731A;
+    --stock-soft: #F7F0E2;
+    --stamp: #B5402F;
+    --warn-bg: #FBF3EC;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+    font-size: 15px;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  .serif { font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; }
+
+  /* ---------- header ---------- */
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.18em; color: var(--accent);
+    font-weight: 600; margin-bottom: 14px;
+  }
+  h1 {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+    font-size: clamp(26px, 4.5vw, 38px);
+    font-weight: 600; line-height: 1.45; margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .lede { color: var(--ink-2); max-width: 40em; margin: 0 0 28px; }
+  .premise { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .premise span {
+    font-size: 12.5px; color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 3px 14px; background: var(--surface);
+  }
+
+  .revision {
+    margin-top: 26px; background: var(--surface); border: 1px solid var(--stamp);
+    border-radius: 10px; padding: 16px 22px; font-size: 13px;
+  }
+  .revision b.rev-title { color: var(--stamp); display: block; margin-bottom: 6px; font-size: 12.5px; letter-spacing: 0.06em; }
+  .revision ol { margin: 0; padding-left: 20px; }
+  .revision li { margin-bottom: 3px; color: var(--ink-2); }
+  .revision li b { color: var(--ink); }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 72px; }
+  h2 {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+    font-size: 22px; font-weight: 600; margin: 0 0 6px; text-wrap: balance;
+  }
+  .h2-note { color: var(--ink-2); font-size: 13.5px; margin: 0 0 28px; max-width: 42em; }
+  .section-no {
+    font-size: 11px; letter-spacing: 0.2em; color: var(--ink-3);
+    margin-bottom: 8px; font-weight: 600;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline { position: relative; padding-left: 30px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px;
+    width: 2px; background: var(--line);
+  }
+  .phase { position: relative; margin-bottom: 22px; }
+  .phase::before {
+    content: ""; position: absolute; left: -28px; top: 22px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--ground); border: 3px solid var(--accent);
+  }
+  .phase.now::before { border-color: var(--stamp); background: var(--stamp); }
+  .phase-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 22px 26px;
+  }
+  .phase-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; margin-bottom: 4px; }
+  .phase-title { font-size: 17.5px; font-weight: 700; }
+  .phase-period { font-size: 12.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .stamp {
+    display: inline-block; font-size: 11px; font-weight: 700; color: var(--stamp);
+    border: 1.5px solid var(--stamp); border-radius: 4px; padding: 0 8px;
+    letter-spacing: 0.12em; transform: rotate(-3deg);
+  }
+  .phase-stats {
+    display: flex; flex-wrap: wrap; gap: 6px 26px; margin: 8px 0 12px;
+    font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums;
+  }
+  .phase-stats strong { color: var(--ink); font-weight: 700; }
+  .phase ul { margin: 0; padding-left: 20px; }
+  .phase li { margin-bottom: 3px; }
+  .gate {
+    margin-top: 14px; padding: 10px 16px; border-radius: 7px;
+    background: var(--accent-soft); font-size: 13.5px;
+  }
+  .gate b { color: var(--accent); }
+
+  /* ---------- expandable detail kit ---------- */
+  details.kit { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+  details.kit summary {
+    cursor: pointer; font-size: 13px; font-weight: 700; color: var(--accent);
+    list-style-position: inside;
+  }
+  details.kit summary:hover { text-decoration: underline; }
+  .kit-grid { display: grid; gap: 16px; margin-top: 14px; }
+  .kit-block h4 {
+    font-size: 12px; letter-spacing: 0.1em; margin: 0 0 6px;
+    color: var(--ink-3); font-weight: 700;
+  }
+  .kit-block ul, .kit-block ol { margin: 0; padding-left: 20px; font-size: 13.5px; }
+  .kit-block li { margin-bottom: 5px; }
+  .kit-block li b { color: var(--ink); }
+  .deliver {
+    background: var(--stock-soft); border-radius: 7px; padding: 10px 16px;
+    font-size: 13px;
+  }
+  .deliver b { color: var(--stock); }
+
+  /* ---------- 文例 box ---------- */
+  .doc {
+    background: var(--ground); border: 1px dashed var(--line); border-radius: 8px;
+    padding: 12px 16px; margin: 10px 0 4px; font-size: 13px; color: var(--ink-2);
+    line-height: 1.9;
+  }
+  .doc-label {
+    display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent);
+    letter-spacing: 0.08em; margin-bottom: 4px;
+  }
+
+  /* ---------- chart ---------- */
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 26px 28px 20px;
+  }
+  .chart-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+  .chart-sub { font-size: 12.5px; color: var(--ink-2); margin-bottom: 14px; }
+  .scenario-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .scenario-tabs button {
+    font: inherit; font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+    background: var(--ground); border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 16px; cursor: pointer;
+  }
+  .scenario-tabs button[aria-pressed="true"] {
+    background: var(--accent-soft); border-color: var(--accent); color: var(--accent);
+  }
+  .scenario-tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .scenario-desc { font-size: 12.5px; color: var(--ink-2); margin-bottom: 14px; min-height: 1.5em; }
+  .legend { display: flex; gap: 22px; margin-bottom: 18px; flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .chip { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+  .chip.flow { background: var(--flow); }
+  .chip.stock { background: var(--stock); }
+
+  .plot { position: relative; height: 280px; }
+  .gridline { position: absolute; left: 44px; right: 0; height: 1px; background: var(--line); opacity: 0.7; }
+  .gridlabel {
+    position: absolute; left: 0; width: 38px; text-align: right;
+    font-size: 11px; color: var(--ink-3); transform: translateY(-50%);
+    font-variant-numeric: tabular-nums;
+  }
+  .bars {
+    position: absolute; left: 44px; right: 0; top: 0; bottom: 24px;
+    display: flex; align-items: flex-end; justify-content: space-around; gap: 8px;
+  }
+  .bargroup { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; flex: 1; max-width: 84px; }
+  .bartotal { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 5px; font-variant-numeric: tabular-nums; }
+  .stack { width: 34px; display: flex; flex-direction: column-reverse; gap: 2px; }
+  .seg { width: 100%; cursor: default; }
+  .seg.flow { background: var(--flow); }
+  .seg.stock { background: var(--stock); }
+  .stack .seg:last-child { border-radius: 4px 4px 0 0; }
+  .xlabel { position: absolute; bottom: 0; left: 44px; right: 0; display: flex; justify-content: space-around; gap: 8px; }
+  .xlabel span { flex: 1; max-width: 84px; text-align: center; font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .chart-note { font-size: 12px; color: var(--ink-3); margin-top: 16px; }
+
+  #tooltip {
+    position: fixed; pointer-events: none; z-index: 10;
+    background: var(--ink); color: var(--ground);
+    font-size: 12px; line-height: 1.5; padding: 7px 12px; border-radius: 6px;
+    opacity: 0; transition: opacity 0.12s; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-reduced-motion: reduce) { #tooltip { transition: none; } }
+
+  details.datatable { margin-top: 14px; font-size: 13px; }
+  details.datatable summary { cursor: pointer; color: var(--accent); font-size: 12.5px; }
+  .tbl-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; margin-top: 10px; min-width: 460px; font-variant-numeric: tabular-nums; }
+  th, td { border: 1px solid var(--line); padding: 6px 14px; text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: var(--accent-soft); font-weight: 600; font-size: 12.5px; }
+
+  .odds { margin-top: 22px; }
+  .odds h3 { font-size: 14px; margin: 0 0 4px; }
+  .odds p { font-size: 12.5px; color: var(--ink-2); margin: 0 0 8px; }
+  .odds table { min-width: 100%; }
+  .odds td:last-child { white-space: nowrap; font-weight: 700; }
+
+  /* ---------- 90-day flow ---------- */
+  .step {
+    display: grid; grid-template-columns: 72px 1fr; gap: 18px;
+    padding: 22px 0; border-bottom: 1px solid var(--line);
+  }
+  .step:last-child { border-bottom: none; }
+  @media (max-width: 560px) { .step { grid-template-columns: 1fr; gap: 6px; } }
+  .step-when {
+    font-size: 12px; color: var(--accent); font-weight: 700;
+    letter-spacing: 0.04em; padding-top: 3px; font-variant-numeric: tabular-nums;
+  }
+  .step-body > b { display: block; margin-bottom: 4px; font-size: 15px; }
+  .step-body p { margin: 0 0 8px; color: var(--ink-2); font-size: 13.5px; }
+  .step-body ul, .step-body ol { margin: 6px 0; padding-left: 20px; font-size: 13.5px; }
+  .step-body li { margin-bottom: 5px; }
+  .step-goal {
+    margin-top: 10px; font-size: 12.5px; color: var(--stock);
+    background: var(--stock-soft); border-radius: 6px; padding: 6px 14px;
+    display: inline-block;
+  }
+
+  /* ---------- flywheel ---------- */
+  .wheel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 640px) { .wheel { grid-template-columns: 1fr; } }
+  .wheel-item {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; position: relative;
+  }
+  .wheel-no { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .wheel-item b { font-size: 14px; }
+  .wheel-item p { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.7; }
+  .wheel-loop {
+    margin-top: 14px; font-size: 13px; color: var(--ink-2);
+    background: var(--stock-soft); border-radius: 8px; padding: 12px 18px;
+  }
+
+  /* ---------- pricing ---------- */
+  .price-scroll { overflow-x: auto; }
+  .price { width: 100%; min-width: 620px; }
+  .price td, .price th { text-align: left; padding: 10px 16px; }
+  .price .amount { white-space: nowrap; font-weight: 700; text-align: right; }
+  .badge-stock {
+    display: inline-block; font-size: 11px; font-weight: 700; color: var(--stock);
+    background: var(--stock-soft); border-radius: 4px; padding: 1px 8px; margin-left: 6px;
+  }
+
+  /* ---------- pitfalls ---------- */
+  .pitfalls { display: grid; gap: 10px; }
+  .pit {
+    background: var(--warn-bg); border-left: 3px solid var(--stamp);
+    border-radius: 0 8px 8px 0; padding: 12px 18px; font-size: 13.5px;
+  }
+  .pit b { color: var(--stamp); }
+
+  /* ---------- checklist ---------- */
+  .check-card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 24px 28px; }
+  .check-card label {
+    display: flex; gap: 12px; align-items: baseline; padding: 8px 0;
+    border-bottom: 1px dashed var(--line); cursor: pointer;
+  }
+  .check-card label:last-child { border-bottom: none; }
+  .check-card input { accent-color: var(--accent); transform: translateY(1px); }
+  .check-card input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .check-note { font-size: 12.5px; color: var(--ink-3); margin-top: 12px; }
+
+  footer { margin-top: 80px; font-size: 12px; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 18px; }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">起業ロードマップ ｜ 2026年7月版・監査反映版</div>
+    <h1>会社員のまま始めて、<br>「ほぼ不労」に至るまでの全体像</h1>
+    <p class="lede">超小型企業へのAI導入支援を、副業の伴走支援から始めてストック収益のプロダクトに育てる。5つのフェーズと関門、各フェーズの準備・タスク・成果物、90日の週単位フローまで落とし込んだ実行版。</p>
+    <div class="premise">
+      <span>前提：会社員のまま副業で開始</span>
+      <span>入口：行政書士（知人あり）→ 本命はその顧問先</span>
+      <span>武器：エンジニア歴2年＋AI活用経験＋SNS発信</span>
+    </div>
+
+    <div class="revision">
+      <b class="rev-title">▼ 2026-07-03 監査による修正（データで裏取りした結果、初版から4点を変更）</b>
+      <ol>
+        <li><b>高額リテイナーの相手を行政書士本人 → 顧問先の中小企業に変更。</b>行政書士の76%は年商500万円未満で、月10万円の支払いは構造的に無理。行政書士は「入口・紹介チャネル・低額顧客」と再定義</li>
+        <li><b>見込み客を最初から3〜5件の並行パイプラインに。</b>知人1人に全依存する計画は、その1人が断ったら90日止まる</li>
+        <li><b>収益を悲観・中央値・楽観の3シナリオ化。</b>初版のグラフは楽観シナリオ単線だった</li>
+        <li><b>補助金ルートを正確化。</b>個人事業主は単独でIT導入支援事業者になれない（コンソーシアム構成員のみ・幹事社は法人）。カスタム開発はITツール事前登録がないと補助対象外</li>
+      </ol>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-no">MAP</div>
+    <h2>全体マップ — 5つのフェーズ</h2>
+    <p class="h2-note">各フェーズには「次に進む関門」がある。期間は目安で、<b>関門を超えたら次へ進む</b>のが正しい読み方。各カードの「詳細タスクと準備」を開くと実行レベルの内容が見られる。</p>
+
+    <div class="timeline">
+
+      <!-- ============ PHASE 0 ============ -->
+      <div class="phase now">
+        <div class="phase-card">
+          <div class="phase-head">
+            <span class="phase-title serif">Phase 0　地ならしとヒアリング</span>
+            <span class="phase-period">今月〜1ヶ月目</span>
+            <span class="stamp">今ここ</span>
+          </div>
+          <div class="phase-stats">
+            <span>月収 <strong>0円</strong></span>
+            <span>稼働 <strong>週3〜5時間</strong></span>
+          </div>
+          <ul>
+            <li>就業規則の副業規定・競業避止を確認する</li>
+            <li><b>見込み客リストを3〜5件</b>作る（行政書士の知人＋前職つながり＋知人経営者）。1人に依存しない</li>
+            <li>行政書士から順にヒアリング（<b>売り込まない</b>）。「忙しくて仕事を断っている相手か」を必ず確かめる</li>
+          </ul>
+
+          <details class="kit">
+            <summary>詳細タスクと準備を開く</summary>
+            <div class="kit-grid">
+              <div class="kit-block">
+                <h4>準備するもの</h4>
+                <ul>
+                  <li><b>就業規則のコピー</b>——確認するのは3点：①副業の可否（禁止か・許可制か・届出制か）②競業避止の範囲 ③秘密保持（会社のPC・アカウント・情報を副業に使わないこと）</li>
+                  <li><b>見込み客リスト</b>——名前／業種／つながりの強さ／忙しそうか、の4列で3〜5件。ヒアリングは全員に申し込む（アポ承諾率は体感5〜7割。3件申し込めば2件は取れる）</li>
+                  <li><b>ヒアリングシート（90日フロー第2〜3週に全11問）</b>を印刷 or タブレットに</li>
+                  <li><b>自己紹介1枚</b>——「何ができる人か」をA4半分で。経歴・作れるものの例・連絡先</li>
+                </ul>
+              </div>
+              <div class="kit-block">
+                <h4>やること（順番どおりに）</h4>
+                <ol>
+                  <li>就業規則の3点確認。許可制なら申請する。グレーなら「まだ収入ゼロの調査段階」なので急がず、収入発生前までに整理すればよい</li>
+                  <li>見込み客3〜5件にアポ連絡（文例は90日フロー第1週）。<b>直列でなく並行で</b>——1人目の結果を待たずに2人目にも送る</li>
+                  <li>ヒアリング実施 → その場で<b>業務棚卸し表</b>を作る（列：作業名／頻度／1回の所要時間／使うツール／イライラ度）</li>
+                  <li><b>選別</b>：「仕事を断ることがある」「繁忙で回っていない」相手だけを候補に残す。暇な事務所は時間が浮いても売上が増えないため、3ヶ月で解約される。深追いせず次の見込みへ</li>
+                  <li>開業届＋青色申告承認申請を出す（freee開業などで30分・無料。青色申告は最大65万円控除）。※会社にバレたくない場合は住民税を「普通徴収」に</li>
+                  <li>事業用の銀行口座とクレジットカードを私用と分ける</li>
+                </ol>
+              </div>
+              <div class="deliver"><b>このフェーズの成果物：</b>見込み客リスト3〜5件 ／ 業務棚卸し表1〜3枚 ／ 「忙しい×週◯時間の定型作業」を持つ候補1件以上</div>
+            </div>
+          </details>
+
+          <div class="gate"><b>関門：</b>「仕事を断るほど忙しい相手」で「週◯時間かかっている定型作業」を数字つきで特定できたら Phase 1 へ</div>
+        </div>
+      </div>
+
+      <!-- ============ PHASE 1 ============ -->
+      <div class="phase">
+        <div class="phase-card">
+          <div class="phase-head">
+            <span class="phase-title serif">Phase 1　有料パイロット</span>
+            <span class="phase-period">1〜3ヶ月目</span>
+          </div>
+          <div class="phase-stats">
+            <span>月収 <strong>3万円前後</strong></span>
+            <span>稼働 <strong>週8〜12時間</strong></span>
+          </div>
+          <ul>
+            <li>1業務だけ自動化する。<b>作り込まない</b>（2週間で動くもの）</li>
+            <li>「週5時間 → 30分」のような<b>効果の数字を1つ作る</b>。稼ぐことより事例づくりが目的</li>
+            <li>数字つきの事例をnote・Xで発信する</li>
+          </ul>
+
+          <details class="kit">
+            <summary>詳細タスクと準備を開く</summary>
+            <div class="kit-grid">
+              <div class="kit-block">
+                <h4>準備するもの</h4>
+                <ul>
+                  <li><b>提案書1枚</b>（構成は90日フロー第4週）</li>
+                  <li><b>契約書テンプレ2種</b>——業務委託契約書（個別）＋秘密保持契約書（NDA）。freeeサイン・クラウドサイン等の雛形を流用。士業相手はNDAがあるだけで信頼度が変わる</li>
+                  <li><b>見積書・請求書</b>——Misoca / freee請求書（無料枠で十分）。月末締め翌月末払いが基本</li>
+                  <li><b>開発環境</b>——n8n（クラウド版 月20ユーロ〜）or Google Apps Script（無料）／Claude APIキー／テスト用のダミーデータ（本番の顧客データで開発しない）</li>
+                </ul>
+              </div>
+              <div class="kit-block">
+                <h4>やること</h4>
+                <ol>
+                  <li>価格は相手の規模で決める：<b>行政書士（一人事務所）なら月3万円</b>。年商500万未満が大半の相手に月5万は重い。従業員のいる企業なら月5万でも通る</li>
+                  <li>価格は「時給換算」で語る（例：週5時間×時給3,000円＝月6万円分の作業が月3万円で消えます）</li>
+                  <li>契約締結 → 開発前に<b>導入前の作業時間を必ず測ってもらう</b>（Before の数字がないと効果を証明できない。ここを飛ばすのが一番多い失敗）</li>
+                  <li>開発2週間。スコープは固定し、追加要望は「改善リストに入れて来月」と返す。既存SaaSで済むものは作らない</li>
+                  <li>納品時に30分の使い方レクチャー＋A4一枚のマニュアル。「使われない自動化」は失敗</li>
+                  <li>週1回15分のチェックイン（LINEでも可）で詰まりを即解消</li>
+                  <li>4週間後に After を測定 → 事例記事化（構成：課題→仕組み→数字→顧客の一言コメント）。<b>公開前に顧客の許可を取る</b>（匿名化でもOK）</li>
+                </ol>
+              </div>
+              <div class="deliver"><b>このフェーズの成果物：</b>稼働する自動化1本 ／ Before→Afterの数字 ／ 公開事例記事1本 ／ 契約書・請求書の型</div>
+            </div>
+          </details>
+
+          <div class="gate"><b>関門：</b>効果を数字で証明した事例が1本できたら Phase 2 へ</div>
+        </div>
+      </div>
+
+      <!-- ============ PHASE 2 ============ -->
+      <div class="phase">
+        <div class="phase-card">
+          <div class="phase-head">
+            <span class="phase-title serif">Phase 2　顧問先への展開（ここが本命）</span>
+            <span class="phase-period">3〜9ヶ月目</span>
+          </div>
+          <div class="phase-stats">
+            <span>月収 <strong>10〜25万円</strong></span>
+            <span>稼働 <strong>週12〜15時間</strong></span>
+          </div>
+          <ul>
+            <li>行政書士は<b>月2〜3万円の軽い保守＋紹介パートナー</b>に。高額リテイナーを売り込まない</li>
+            <li><b>本命：紹介された顧問先企業（建設業者など）に月8〜15万円の伴走契約</b>。人件費の絶対額が大きい相手なら月10万の投資が成立する</li>
+            <li>副業の稼働上限を考え、リテイナーは2〜3社で止める</li>
+          </ul>
+
+          <details class="kit">
+            <summary>詳細タスクと準備を開く</summary>
+            <div class="kit-grid">
+              <div class="kit-block">
+                <h4>準備するもの</h4>
+                <ul>
+                  <li><b>リテイナー契約書</b>——月額・業務範囲（月◯時間まで／改善1本まで等の上限を必ず書く）・解約は1ヶ月前通知・データの取り扱い</li>
+                  <li><b>月次レポートのテンプレ</b>——今月自動化したこと／浮いた時間の累計／来月の改善予定。A4一枚。これが継続率を決める</li>
+                  <li><b>稼働記録ツール</b>——Toggl等で案件ごとの時間を測る。時給換算を常に把握（時給5,000円を下回る案件は値上げか整理）</li>
+                  <li><b>無料診断30分の枠組み</b>——紹介された会社への入口商品。棚卸し表を一緒に作って痛みトップ3を渡すだけ。売り込みはしない</li>
+                  <li><b>平日日中の時間の確保策</b>——商談・定例は平日日中に発生する。昼休みの30分Zoom／夕方17〜19時の定例／普段は非同期LINE、を最初から相手と合意しておく。ここを設計しないと本業と衝突して破綻する</li>
+                </ul>
+              </div>
+              <div class="kit-block">
+                <h4>やること</h4>
+                <ol>
+                  <li>行政書士には月2〜3万円の保守契約を提案（浮いた時間の維持＋小さな改善）。同時に<b>紹介パートナー化</b>——「顧問先を紹介してもらえたら、先生の保守は無料にします」等の設計も有効</li>
+                  <li>紹介先には無料診断30分 → 痛みトップ3を渡す → 刺さった1つをパイロット（月5万・従業員ありの企業価格）→ 効果実証 → 月8〜15万の伴走契約へ。Phase 1 と同じ型を単価を上げて回すだけ</li>
+                  <li>建設業者の鉄板ネタ：現場からの音声メモ→日報自動作成／現場写真の自動整理／見積書ドラフト生成。介護なら：記録業務の音声入力→介護記録ドラフト</li>
+                  <li>月次運用のリズムを固定：月1回30分の定例 → 改善1本実装 → 月次レポート送付</li>
+                  <li>週15時間を超えそうになったら、新規を止めるか単価を上げる。<b>副業期は「断る」も戦略</b></li>
+                  <li>発信は週1本に固定（事例・業務ハック・失敗談）。プロフィールを「士業・建設業の業務自動化」と明記する</li>
+                </ol>
+              </div>
+              <div class="deliver"><b>このフェーズの成果物：</b>顧問先リテイナー2〜3社 ／ 紹介パートナー化した行政書士 ／ 月次レポートの型 ／ 業種別の自動化ネタ帳</div>
+            </div>
+          </details>
+
+          <div class="gate"><b>関門：</b>リテイナー2〜3社で、副業収入が給与の5割を超えたら Phase 3 へ</div>
+        </div>
+      </div>
+
+      <!-- ============ PHASE 3 ============ -->
+      <div class="phase">
+        <div class="phase-card">
+          <div class="phase-head">
+            <span class="phase-title serif">Phase 3　テンプレ化と独立判断</span>
+            <span class="phase-period">9〜18ヶ月目</span>
+          </div>
+          <div class="phase-stats">
+            <span>月収 <strong>25〜45万円</strong></span>
+            <span>稼働 <strong>独立判断しだい</strong></span>
+          </div>
+          <ul>
+            <li><b>同じ課題を3回解いたらパッケージ化</b>。導入を「開発」から「設定」に変える</li>
+            <li>独立の判断基準を数字で決めておき、感情で決めない</li>
+            <li>補助金対応は<b>法人ベンダーとの提携（コンソーシアム）か法人化とセット</b>で考える</li>
+          </ul>
+
+          <details class="kit">
+            <summary>詳細タスクと準備を開く</summary>
+            <div class="kit-grid">
+              <div class="kit-block">
+                <h4>準備するもの</h4>
+                <ul>
+                  <li><b>独立判断チェックリスト</b>——①副業月収＞給与が6ヶ月連続 ②生活費12ヶ月分の貯蓄 ③リテイナーの契約書がすべて締結済み ④健康保険（任意継続 vs 国保の比較）と年金の切替計画 ⑤住宅ローン・賃貸審査など「会社員の信用」が必要な手続きは退職前に済ませる</li>
+                  <li><b>パッケージの導入手順書</b>——3回解いた課題の共通部分をモジュール化し、新規導入が「コードを書く」でなく「設定する」だけになる状態</li>
+                  <li><b>補助金対応の正確な知識</b>——個人事業主は単独でIT導入支援事業者になれない（コンソーシアム構成員としてのみ登録可・幹事社は法人）。さらに補助対象は<b>事前登録・承認されたITツールのみ</b>で、オーダーメイド開発はそのままでは対象外。現実的な選択肢は (a) 登録済み法人ベンダーのコンソーシアムに構成員として入る (b) 法人化して自社登録し、パッケージをITツールとして登録する、の2つ</li>
+                  <li><b>税務の判断材料</b>——インボイス登録の要否、法人化の目安（利益600〜800万円あたりで税理士に相談）。法人化は補助金の自社登録とも連動するのでまとめて検討</li>
+                </ul>
+              </div>
+              <div class="kit-block">
+                <h4>やること</h4>
+                <ol>
+                  <li>テンプレ化：直近3件の導入から共通ワークフローを抽出 → 顧客ごとに変わる部分を「設定項目リスト」に分離 → 導入手順書を書く</li>
+                  <li>手順書ができたら次の新規で検証：導入にかかる時間が1/3以下になっていれば合格</li>
+                  <li>補助金は「知識として顧客に案内できる」状態を先に作る（それだけでも商談の武器になる）。提携・登録は独立後に着手で遅くない</li>
+                  <li>価格改定：実績が積み上がったら新規は月15万円〜に。既存客は据え置きで守る</li>
+                  <li>独立判断。チェックリストを満たしたら退職手続き（引き継ぎ2ヶ月を見込む）。満たさないなら副業のまま継続で何も問題ない——<b>独立しないのも正解のひとつ</b></li>
+                </ol>
+              </div>
+              <div class="deliver"><b>このフェーズの成果物：</b>導入手順書つきパッケージ1個 ／ 独立判断の完了 ／ 補助金対応の提携ルート ／ 月15万円〜の新価格表</div>
+            </div>
+          </details>
+
+          <div class="gate"><b>関門：</b>新規導入が「作業」でなく「設定」になったら Phase 4 へ</div>
+        </div>
+      </div>
+
+      <!-- ============ PHASE 4 ============ -->
+      <div class="phase">
+        <div class="phase-card">
+          <div class="phase-head">
+            <span class="phase-title serif">Phase 4　プロダクト化・ストック収益</span>
+            <span class="phase-period">18ヶ月目〜</span>
+          </div>
+          <div class="phase-stats">
+            <span>目標 <strong>まず10事務所（MRR 10〜30万）</strong></span>
+            <span>稼働 <strong>減らしていく</strong></span>
+          </div>
+          <ul>
+            <li>「◯◯特化の自動化パック」を月1〜3万円で販売。<b>市場は「行政書士5万人」ではなく専門分野単位で数千事務所</b>と見積もる</li>
+            <li>サポートを仕組み化して自分の稼働を外す</li>
+            <li>労働収入の案件は単価を上げて数を絞る</li>
+          </ul>
+
+          <details class="kit">
+            <summary>詳細タスクと準備を開く</summary>
+            <div class="kit-grid">
+              <div class="kit-block">
+                <h4>準備するもの</h4>
+                <ul>
+                  <li><b>販売ページ（LP）</b>——事例の数字を前面に。「週5時間→30分」が最強のコピー</li>
+                  <li><b>決済</b>——Stripe（サブスク課金）。あわせて利用規約・プライバシーポリシー・特定商取引法に基づく表記の3点セット</li>
+                  <li><b>セルフオンボーディング</b>——導入動画（10分×3本）＋設定テンプレ＋FAQ。「自分が説明しなくても導入が終わる」状態が目標</li>
+                  <li><b>解約防止の仕組み</b>——導入後7日・30日の自動フォローメール、活用度が低い顧客の検知</li>
+                </ul>
+              </div>
+              <div class="kit-block">
+                <h4>やること</h4>
+                <ol>
+                  <li>ターゲットは自分がテンプレ化した専門分野（例：建設業許可特化の行政書士）に絞る。「全行政書士向け」は誰にも刺さらない</li>
+                  <li>価格は2段：導入サポート付き（月3万円）とセルフサーブ（月1万円）。<b>最初の10事務所はサポート付き</b>で販売し、その過程でFAQと動画を作る</li>
+                  <li>販売チャネル：これまでの発信資産＋既存顧客の紹介制度（1件紹介で1ヶ月無料など）＋行政書士会支部・士業コミュニティでの登壇や勉強会</li>
+                  <li>KPIは2つだけ見る：<b>MRR（月次経常収益）</b>と<b>解約率</b>。低単価×小規模顧客の解約率は高くなりがち——まず月5%以下を目標にし、3%はその先。解約時は必ず理由を聞く</li>
+                  <li>サポート問い合わせを毎月分類し、多いものからドキュメント・プロダクト改修で潰す（＝稼働が減り続ける構造を作る）</li>
+                  <li>10事務所で成立が確認できてから広げる。<b>「ほぼ不労」はこのフェーズの出口であって入口ではない</b>——最初の1年は普通に手がかかる</li>
+                </ol>
+              </div>
+              <div class="deliver"><b>このフェーズの成果物：</b>MRRの成長曲線 ／ 解約率5%以下→3%へ ／ 自分の稼働が週10時間以下でも回る運営体制</div>
+            </div>
+          </details>
+
+          <div class="gate"><b>ゴール：</b>「ほぼ何もしなくても入る」＝ 仕組みからの収益が生活費を超えた状態</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="section-no">MONEY</div>
+    <h2>収益の設計 — 3つのシナリオで見る</h2>
+    <p class="h2-note">前半は自分の時間を売る「労働収入」で生活基盤を作り、後半でプロダクトの「仕組み収入」に置き換えていく。<b>計画は中央値で立て、楽観は「達成条件つきの上振れ」として扱う。</b></p>
+
+    <div class="chart-card">
+      <div class="chart-title">月収シミュレーション（万円／月）</div>
+      <div class="chart-sub">開始からの経過月数ごとの内訳。3シナリオを同じ縮尺で表示</div>
+      <div class="scenario-tabs" role="group" aria-label="シナリオ切替">
+        <button type="button" data-scenario="median" aria-pressed="true">中央値</button>
+        <button type="button" data-scenario="optimistic" aria-pressed="false">楽観</button>
+        <button type="button" data-scenario="pessimistic" aria-pressed="false">悲観</button>
+      </div>
+      <div class="scenario-desc" id="scenario-desc"></div>
+      <div class="legend">
+        <span><i class="chip flow"></i>労働収入（伴走支援・開発）</span>
+        <span><i class="chip stock"></i>仕組み収入（プロダクト・保守自動化）</span>
+      </div>
+      <div class="plot" id="plot">
+        <div class="gridline" style="bottom: 24px;"></div>
+        <div class="gridline" style="bottom: 103px;"></div>
+        <div class="gridline" style="bottom: 182px;"></div>
+        <div class="gridline" style="bottom: 261px;"></div>
+        <div class="gridlabel" style="bottom: 24px;">0</div>
+        <div class="gridlabel" style="bottom: 103px;">20</div>
+        <div class="gridlabel" style="bottom: 182px;">40</div>
+        <div class="gridlabel" style="bottom: 261px;">60</div>
+        <div class="bars" id="bars"></div>
+        <div class="xlabel" id="xlabels"></div>
+      </div>
+      <div class="chart-note" id="chart-note"></div>
+      <details class="datatable">
+        <summary>数値を表で見る</summary>
+        <div class="tbl-scroll">
+          <table id="datatable">
+            <tr><th>経過月</th><th>労働収入</th><th>仕組み収入</th><th>合計</th></tr>
+          </table>
+        </div>
+      </details>
+
+      <div class="odds">
+        <h3>到達確率の見立て（2026年7月時点の主観評価）</h3>
+        <p>温かい紹介＋実装力がある前提。最大の脱落要因は営業でも技術でもなく「本業と並行で週10時間を18ヶ月続けられるか」。</p>
+        <div class="tbl-scroll">
+          <table>
+            <tr><th>到達点</th><th>見立て</th></tr>
+            <tr><td>90日で初売上（月3万円前後）</td><td>60〜70%</td></tr>
+            <tr><td>12ヶ月で月15〜30万円</td><td>40〜50%</td></tr>
+            <tr><td>24ヶ月で月50万超・うち仕組み収入25万（楽観シナリオ）</td><td>10〜20%</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-no">MENU</div>
+    <h2>売り物と値付け — 相手の規模で価格を変える</h2>
+    <p class="h2-note">売るのは「AIツール」ではなく「浮いた時間」。ただし<b>浮いた時間がお金になるのは忙しい相手だけ</b>。値付けは相手が節約できる人件費と支払余力の両方から決める。</p>
+    <div class="price-scroll">
+      <table class="price">
+        <tr><th>商品</th><th>売る相手</th><th>中身</th><th style="text-align:right">価格</th></tr>
+        <tr>
+          <td><b>パイロット導入</b></td>
+          <td>行政書士（一人事務所）</td>
+          <td>1業務の自動化を1ヶ月で。信頼獲得と事例づくりが目的。相手の年商規模（76%が500万未満）に合わせ低額に</td>
+          <td class="amount">月3万円</td>
+        </tr>
+        <tr>
+          <td><b>保守＋紹介パートナー</b></td>
+          <td>行政書士</td>
+          <td>仕組みの維持＋小さな改善。顧問先の紹介と引き換えに割引・無料化する設計も有効</td>
+          <td class="amount">月2〜3万円</td>
+        </tr>
+        <tr>
+          <td><b>伴走リテイナー（本命）</b></td>
+          <td>顧問先の中小企業<br>（従業員5〜30人）</td>
+          <td>保守・改善＋毎月1業務を追加で自動化。人件費の絶対額が大きい相手なら月10万が成立する（相場は月10〜30万円）</td>
+          <td class="amount">月8〜15万円</td>
+        </tr>
+        <tr>
+          <td><b>スポット開発</b></td>
+          <td>中小企業</td>
+          <td>まとまった業務システム。補助金対応は法人ベンダー提携か法人化後の自社登録が前提</td>
+          <td class="amount">30〜100万円／件</td>
+        </tr>
+        <tr>
+          <td><b>自動化パック<span class="badge-stock">ストック</span></b></td>
+          <td>専門分野を絞った事務所</td>
+          <td>Phase 4の主力。テンプレ化した仕組みを「◯◯特化」のプロダクトとして販売</td>
+          <td class="amount">月1〜3万円 × N</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-no">90 DAYS</div>
+    <h2>直近90日の詳細フロー</h2>
+    <p class="h2-note">Phase 0〜1を週単位に分解したもの。すべて副業時間（週10時間前後）で回る設計。各週に「その週のゴール」を置いた。</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-when">第1週</div>
+        <div class="step-body">
+          <b>就業規則を確認し、見込み客3〜5件に並行でアポを取る</b>
+          <ul>
+            <li>就業規則で確認する3点：<b>副業の可否</b>（禁止／許可制／届出制）・<b>競業避止</b>の範囲・<b>秘密保持</b>（会社のPC・アカウント・情報を一切使わない体制にする）</li>
+            <li>見込み客リストを作る：行政書士の知人を筆頭に、前職つながり・知人経営者で3〜5件。<b>1人目の返事を待たずに全員に送る</b>（直列は90日計画の最大の敵）</li>
+            <li>アポは「営業ではない」ことを明確に。日程は先方の閑散時間帯（士業は月初か夕方が狙い目）</li>
+          </ul>
+          <div class="doc">
+            <span class="doc-label">アポ連絡の文例（LINEやメールでそのまま使える）</span>
+            ◯◯さん、ご無沙汰しています。実はいま、小さな事務所や会社の事務作業をAIで自動化する仕事を準備していて、まずは現場のリアルな話を知りたいと思っています。営業ではないのでご安心ください（笑）。1時間だけ、普段どんな作業に時間を取られているか聞かせてもらえませんか？お礼として、AIの使い方で知っていることは何でもお伝えします。
+          </div>
+          <span class="step-goal">今週のゴール：アポが2件以上確定している</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-when">第2〜3週</div>
+        <div class="step-body">
+          <b>ヒアリング（1時間）で「忙しさ」と「痛み」を数字にする</b>
+          <p>質問は全11問。前半で全体像、後半で深掘り。<b>その場で解決策を語らない</b>のが鉄則（語ると無料コンサルで終わる）。</p>
+          <ol>
+            <li>専門分野と顧客構成は？（建設業許可／入管／相続／法人設立…顧問は何社くらい？）</li>
+            <li><b>仕事を断ることはありますか？</b>（←最重要の選別質問。Noなら時間が浮いても売上にならず、継続契約は3ヶ月で切られる。その場合は深追いせず次の見込みへ）</li>
+            <li>1週間の時間の使い方をざっくり教えてください（面談・書類作成・役所・移動・事務の割合）</li>
+            <li>「またこれか」と一番うんざりする作業は？</li>
+            <li>その作業は週何回・1回何分かかりますか？（←提案の核になる数字）</li>
+            <li>顧客から情報や書類をもらう手段は？（LINE／メール／FAX／紙。混在しているほど自動化の価値が高い）</li>
+            <li>資料が揃わないとき、どうやって催促していますか？</li>
+            <li>申請書はどう作っていますか？（Word・Excelのひな形に手作業転記？専用ソフト？）</li>
+            <li>許可の更新期限や案件の進捗はどう管理していますか？（Excel／手帳／記憶）</li>
+            <li>過去に効率化ツールを入れて挫折した経験は？何が原因でしたか？（←同じ地雷を踏まないため）</li>
+            <li>もし週5時間浮いたら、何に使いたいですか？（←「断っていた仕事を受けられる」という答えが出たら最高の見込み客）</li>
+          </ol>
+          <ul>
+            <li>当日のコツ：冒頭で録音の許可を取る／<b>「その作業、実際の画面を見せてもらえますか」</b>と現物を見るのが最重要（口頭説明と実態は必ずズレる）</li>
+            <li>終了後48時間以内に：業務棚卸し表を清書してお礼と一緒に送る（これ自体が「仕事が丁寧な人」という営業になる）</li>
+          </ul>
+          <span class="step-goal">今週のゴール：「忙しい相手×週◯時間の作業」が数字つきで1件特定できている</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-when">第4週</div>
+        <div class="step-body">
+          <b>提案書1枚で「有料パイロット」を提案する</b>
+          <p>提案書はA4一枚・6ブロック構成。長い資料は読まれない。</p>
+          <ol>
+            <li><b>現状</b>：「◯◯の作業に週5時間 ＝ 月20時間 ＝ 人件費換算で月◯万円」</li>
+            <li><b>自動化後の姿</b>：作業の流れがどう変わるか、図1つで</li>
+            <li><b>やること／やらないこと</b>：スコープを明文化（後の「ついでにこれも」を防ぐ）</li>
+            <li><b>データの取り扱い</b>：AIの学習に使われない設定（Claude APIは入力データを学習に使用しない）・保存先・アクセス権。士業にはここが一番効く</li>
+            <li><b>価格と期間</b>：「1ヶ月◯万円。効果がなければ更新しなくてOK」——一人事務所なら3万円、従業員のいる企業なら5万円</li>
+            <li><b>次のステップ</b>：「来週から始められます。必要なのは◯◯のアカウント権限だけ」</li>
+          </ol>
+          <ul>
+            <li>価格の伝え方：「時給3,000円の作業が月20時間 ＝ 月6万円分。それを月3万円で自動化します」と<b>相手の損得で語る</b></li>
+            <li>提案と同時にNDA（秘密保持契約）を差し出す。「先生の顧客情報を扱うので」——これで信頼が跳ね上がる</li>
+            <li>断られたら理由を聞いて撤退し、<b>パイプラインの次の見込みに同じ流れを回す</b>（このために第1週で複数に声をかけてある）</li>
+          </ul>
+          <span class="step-goal">今週のゴール：月3万円前後のパイロット契約が口頭合意まで進んでいる</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-when">第5〜6週</div>
+        <div class="step-body">
+          <b>2週間で動くものを作る</b>
+          <p>候補は効果が出やすい順に：①資料回収の自動督促 ②ヒアリングシート→申請書ドラフトの自動転記（OCR＋LLM）③許可更新期限のリマインド ④面談メモ→報告書ドラフト生成。</p>
+          <div class="doc">
+            <span class="doc-label">技術構成の型（作り込まない構成）</span>
+            入口：Gmail／LINE公式アカウント／Googleフォーム<br>
+            → 自動化エンジン：n8n（クラウド版）または Google Apps Script<br>
+            → AI処理：Claude API（転記・下書き・要約・分類）<br>
+            → 出口：Googleスプレッドシート／Wordひな形／メール下書き<br>
+            運用ルール：認証情報はパスワード管理ツールで管理／顧客データを扱う保存先を文書化／開発はダミーデータで行い、本番データは納品後に接続
+          </div>
+          <ul>
+            <li>1日目にまず「入口→出口が一気通貫でつながる最小版」を作り、以降は精度を上げる（最後に結合、は事故のもと）</li>
+            <li>追加要望が来たら：「いいですね、改善リストに入れます。まず今の1本を確実に動かしましょう」</li>
+            <li>50%の精度でも「人が最終チェックする前提のドラフト生成」として出せば十分価値がある。100%を目指さない</li>
+          </ul>
+          <span class="step-goal">今週のゴール：本人のPC／スマホで実際に動くものが納品されている</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-when">第7〜10週</div>
+        <div class="step-body">
+          <b>運用しながら効果を測る</b>
+          <ul>
+            <li>計測シートはスプレッドシート1枚：作業名／導入前の時間（第4週に測定済み）／導入後の時間／週あたり回数——これだけ</li>
+            <li>週1回15分のチェックイン（LINEで「今週どうでした？」でOK）。詰まりは48時間以内に直す</li>
+            <li>「使われていない」兆候が出たら原因はほぼUI。操作手順を1ステップでも減らす</li>
+            <li>この期間に周辺の小さな困りごとを拾ってメモ（→保守契約の「小さな改善」のネタ帳になる）</li>
+            <li>並行して発信を開始：構築の過程を「◯◯業の自動化やってみた」として週1本（顧客名は伏せる）</li>
+          </ul>
+          <span class="step-goal">この期間のゴール：「週5時間→30分」のようなBefore→Afterの数字が1行取れている</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-when">第11〜13週</div>
+        <div class="step-body">
+          <b>事例化 → 保守契約 → 顧問先への紹介依頼（ここからが本命）</b>
+          <ul>
+            <li>事例記事の構成：①どんな事務所か（匿名可）②何に困っていたか ③何を作ったか ④数字（Before→After）⑤顧客の一言。note＋Xで公開し、固定ポストに</li>
+            <li>行政書士への継続提案は<b>月2〜3万円の保守</b>にとどめる（月10万リテイナーは相手の年商に対して重すぎる）。収益の柱は次の紹介先で作る</li>
+            <li>値上げと紹介依頼は<b>効果の数字を見せた直後</b>が最高のタイミング</li>
+          </ul>
+          <div class="doc">
+            <span class="doc-label">保守契約のトーク例（行政書士向け）</span>
+            この1ヶ月で◯時間浮きました。この仕組みの維持と小さな改善を、月2〜3万円で続けませんか。効果が感じられなければ、いつでも解約で大丈夫です。
+          </div>
+          <div class="doc">
+            <span class="doc-label">紹介依頼のトーク例（ここが90日で一番大事な一言）</span>
+            先生の顧問先で、事務作業や人手不足に困っている会社はありませんか？建設会社さんなら日報や見積の自動化で同じことができます。今回の事例をそのままお見せできるので、1社ご紹介いただけたら30分の無料診断からやらせていただきます。もし成約したら、先生の保守費用は無料にします。
+          </div>
+          <span class="step-goal">90日のゴール：保守契約1社（月2〜3万）＋ 顧問先への紹介1件以上 ＋ 公開事例1本</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="section-no">ENGINE</div>
+    <h2>顧客が顧客を呼ぶ構造</h2>
+    <p class="h2-note">行政書士が起点として優れているのは「本人が大口顧客だから」ではなく「顧問先ネットワークの入口だから」。顧問先は建設・飲食・介護など人手不足の超小型企業そのもので、こちらが収益の本命。</p>
+    <div class="wheel">
+      <div class="wheel-item">
+        <div class="wheel-no">STEP 1</div>
+        <b>行政書士で小さく成果を出す</b>
+        <p>月3万円のパイロットで十分。目的は売上でなく、数字つき事例と信頼。定型書類の多い業務はAI自動化と相性抜群。</p>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-no">STEP 2</div>
+        <b>数字つき事例を作る</b>
+        <p>「週5時間→30分」の1行が営業資産。事例が次の商談の説得材料になる。</p>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-no">STEP 3</div>
+        <b>SNS・noteで発信する</b>
+        <p>あなたの発信チャネルが生きる場所。事例記事は寝ている間も営業してくれる。</p>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-no">STEP 4</div>
+        <b>顧問先へ紹介してもらう（本命）</b>
+        <p>建設業者（人手不足ワースト1位）・飲食・介護へ。従業員のいる企業なら月8〜15万のリテイナーが成立する。士業からの紹介は信頼が最初からある。</p>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-no">STEP 5</div>
+        <b>同じ課題をテンプレ化する</b>
+        <p>3回解いた課題はパッケージにする。導入コストが下がり、利益率が上がる。</p>
+      </div>
+      <div class="wheel-item">
+        <div class="wheel-no">STEP 6</div>
+        <b>プロダクトとして売る</b>
+        <p>「◯◯特化」の縦型プロダクト。市場は専門分野単位で数千事務所——小さいが、一人で食うには十分な縦市場。</p>
+      </div>
+    </div>
+    <div class="wheel-loop">↻ STEP 6 の売上と実績が STEP 2〜3 の資産をさらに厚くする。回転するほど営業が要らなくなる——ただし回転が軌道に乗るまで（目安18ヶ月）は普通に手がかかる。「ほぼ不労」は出口であって入口ではない。</div>
+  </section>
+
+  <section>
+    <div class="section-no">GUARD</div>
+    <h2>落とし穴と防御</h2>
+    <div class="pitfalls">
+      <div class="pit"><b>支払余力の見誤り：</b>行政書士の76%は年商500万円未満。本人に月10万のリテイナーを売ろうとしない。高額契約の相手は従業員のいる顧問先企業。</div>
+      <div class="pit"><b>「浮いた時間＝お金」の錯誤：</b>暇な事務所は時間が浮いても売上が増えず、3ヶ月で解約する。「仕事を断ることはありますか？」がYesの相手だけを顧客にする。</div>
+      <div class="pit"><b>N=1依存：</b>知人1人がダメなら90日止まる。見込みは常に3〜5件を並行で。</div>
+      <div class="pit"><b>行政書士法：</b>資格のない人が官公署提出書類の作成を業として行うのは違法。売るのは「代行」ではなく「行政書士本人が使う効率化の仕組み」。この線引きは提案書にも明記する。</div>
+      <div class="pit"><b>補助金の誤解：</b>個人事業主は単独でIT導入支援事業者になれない（コンソーシアム構成員のみ・幹事社は法人）。補助対象は事前登録されたITツールだけで、オーダーメイド開発はそのままでは対象外。「補助金で安くなります」と安易に言わない。</div>
+      <div class="pit"><b>時間帯の衝突：</b>商談・定例・トラブル対応は平日日中に発生する。昼休みZoom・夕方定例・非同期LINEの運用を最初から相手と合意しておく。</div>
+      <div class="pit"><b>無料案件：</b>タダで作ると相手が本気で使わず、事例にもならない。最低でも月3万円。</div>
+      <div class="pit"><b>守秘義務・個人情報：</b>士業のデータをAIに通す設計は、学習への不使用・保存先・アクセス権を文書化する。これは制約ではなく信頼を売る材料。</div>
+      <div class="pit"><b>副業規定：</b>就業規則と競業避止の確認は何よりも先。会社の機材・アカウント・時間は一切使わない。住民税は普通徴収に。</div>
+      <div class="pit"><b>Beforeの測り忘れ：</b>導入前の作業時間を測らずに作り始めると、効果を永遠に証明できない。開発より先に計測。</div>
+      <div class="pit"><b>スコープの膨張：</b>「ついでにこれも」は契約書の業務範囲と「改善リスト」で受け止める。その場で無償対応しない。</div>
+      <div class="pit"><b>継続切れ：</b>最大の脱落要因は営業でも技術でもなく「週10時間×18ヶ月の継続」。月1回、数字を見て続けるかを判断する日をカレンダーに固定する。</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-no">NOW</div>
+    <h2>今週やること</h2>
+    <div class="check-card">
+      <label><input type="checkbox"> 就業規則の副業規定・競業避止・秘密保持の3点を確認する</label>
+      <label><input type="checkbox"> 見込み客リストを3〜5件書き出す（行政書士＋前職つながり＋知人経営者）</label>
+      <label><input type="checkbox"> 全員にアポ連絡を送る（上の文例をそのまま使ってよい。直列にしない）</label>
+      <label><input type="checkbox"> ヒアリング11問を印刷 or メモに用意する</label>
+      <label><input type="checkbox"> 自己紹介1枚（A4半分）を作る</label>
+      <p class="check-note">ヒアリングが終わったら、聞き取った専門分野（建設業許可・入管・相続など）と「仕事を断っているか」の答えを共有してもらえれば、その分野特化の自動化設計と提案書づくりを一緒に詰められる。</p>
+    </div>
+  </section>
+
+  <footer>
+    数値の根拠：デジタル化・AI導入補助金2026（中小企業庁・IT導入支援事業者登録要領）／行政書士実態調査（令和5年・年商500万円未満が76%）／国内AI導入支援の料金相場（月10〜30万円）／帝国データバンク 人手不足調査2026年4月／米国ソロAIエージェンシーの収益相場。金額はすべて目安であり、実際の単価は顧客の削減人件費と支払余力から逆算して決める。到達確率は2026年7月時点の主観的見立て。
+  </footer>
+
+</div>
+
+<div id="tooltip" role="status"></div>
+
+<script>
+  (function () {
+    var scenarios = {
+      median: {
+        label: "中央値",
+        desc: "計画のベースにすべき現実的な線。顧問先展開が1〜2社にとどまり、プロダクトは小さく立ち上がるケース。",
+        note: "12ヶ月で月18万・24ヶ月で月30万（うち仕組み収入8万）。生活を変えるには十分だが「不労」にはまだ遠い。",
+        data: [
+          { m: "1ヶ月", flow: 0,  stock: 0 },
+          { m: "3ヶ月", flow: 3,  stock: 0 },
+          { m: "6ヶ月", flow: 10, stock: 0 },
+          { m: "12ヶ月", flow: 15, stock: 3 },
+          { m: "18ヶ月", flow: 20, stock: 5 },
+          { m: "24ヶ月", flow: 22, stock: 8 }
+        ]
+      },
+      optimistic: {
+        label: "楽観",
+        desc: "達成条件つきの上振れ（見立て10〜20%）：顧問先リテイナー3社＋プロダクト10事務所以上が両立した場合。",
+        note: "24ヶ月で月55万（うち仕組み収入25万）。ここに届くには紹介の歩留まりとプロダクトの解約率の両方が上振れする必要がある。",
+        data: [
+          { m: "1ヶ月", flow: 0,  stock: 0 },
+          { m: "3ヶ月", flow: 5,  stock: 0 },
+          { m: "6ヶ月", flow: 15, stock: 0 },
+          { m: "12ヶ月", flow: 30, stock: 3 },
+          { m: "18ヶ月", flow: 35, stock: 10 },
+          { m: "24ヶ月", flow: 30, stock: 25 }
+        ]
+      },
+      pessimistic: {
+        label: "悲観",
+        desc: "パイロットは成立したが顧問先展開が不発、または本業多忙で稼働が細ったケース。",
+        note: "24ヶ月で月13万。これでも副業としては成立しており、撤退ではなく「ニッチか価格の見直し」で立て直す局面。",
+        data: [
+          { m: "1ヶ月", flow: 0,  stock: 0 },
+          { m: "3ヶ月", flow: 0,  stock: 0 },
+          { m: "6ヶ月", flow: 3,  stock: 0 },
+          { m: "12ヶ月", flow: 5,  stock: 0 },
+          { m: "18ヶ月", flow: 8,  stock: 2 },
+          { m: "24ヶ月", flow: 10, stock: 3 }
+        ]
+      }
+    };
+    var PX_PER_MAN = (261 - 24) / 60; // 60万 = 237px
+
+    var bars = document.getElementById("bars");
+    var xlabels = document.getElementById("xlabels");
+    var tip = document.getElementById("tooltip");
+    var desc = document.getElementById("scenario-desc");
+    var note = document.getElementById("chart-note");
+    var dtable = document.getElementById("datatable");
+    var tabs = document.querySelectorAll(".scenario-tabs button");
+    if (!bars || !xlabels || !tip) { return; }
+
+    function render(key) {
+      var sc = scenarios[key];
+      if (!sc) { return; }
+      bars.innerHTML = "";
+      xlabels.innerHTML = "";
+      desc.textContent = sc.desc;
+      note.textContent = sc.note;
+
+      dtable.innerHTML = "<tr><th>経過月</th><th>労働収入</th><th>仕組み収入</th><th>合計</th></tr>";
+      sc.data.forEach(function (d) {
+        var g = document.createElement("div");
+        g.className = "bargroup";
+
+        var total = document.createElement("div");
+        total.className = "bartotal";
+        total.textContent = (d.flow + d.stock) + "万";
+        g.appendChild(total);
+
+        var stack = document.createElement("div");
+        stack.className = "stack";
+        [["flow", d.flow, "労働収入"], ["stock", d.stock, "仕組み収入"]].forEach(function (s) {
+          if (s[1] <= 0) { return; }
+          var seg = document.createElement("div");
+          seg.className = "seg " + s[0];
+          seg.style.height = Math.max(3, Math.round(s[1] * PX_PER_MAN)) + "px";
+          seg.setAttribute("data-tip", d.m + "目（" + sc.label + "）　" + s[2] + " " + s[1] + "万円／月");
+          stack.appendChild(seg);
+        });
+        g.appendChild(stack);
+        bars.appendChild(g);
+
+        var xl = document.createElement("span");
+        xl.textContent = d.m;
+        xlabels.appendChild(xl);
+
+        var row = document.createElement("tr");
+        row.innerHTML = "<td>" + d.m + "</td><td>" + d.flow + "</td><td>" + d.stock + "</td><td>" + (d.flow + d.stock) + "</td>";
+        dtable.appendChild(row);
+      });
+    }
+
+    tabs.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        tabs.forEach(function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+        render(btn.getAttribute("data-scenario"));
+      });
+    });
+
+    render("median");
+
+    document.addEventListener("mousemove", function (e) {
+      var t = e.target;
+      var txt = t && t.getAttribute ? t.getAttribute("data-tip") : null;
+      if (txt) {
+        tip.textContent = txt;
+        tip.style.opacity = "1";
+        var x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 10);
+        tip.style.left = x + "px";
+        tip.style.top = (e.clientY - 36) + "px";
+      } else {
+        tip.style.opacity = "0";
+      }
+    });
+  })();
+</script>

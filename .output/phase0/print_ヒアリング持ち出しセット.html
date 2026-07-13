@@ -1,0 +1,393 @@
+<meta charset="utf-8">
+<title>ヒアリング持ち出しセット</title>
+<style>
+  :root {
+    --paper: #ffffff;
+    --ink: #1c1e21;
+    --sub: #5c6470;
+    --rule: #c9ced6;
+    --rule-light: #e4e7ec;
+    --accent: #274b6d;
+    --accent-soft: #eef2f7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16181c;
+      --ink: #e8eaed;
+      --sub: #9aa3af;
+      --rule: #454c57;
+      --rule-light: #2e333a;
+      --accent: #8fb4d9;
+      --accent-soft: #22303e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #16181c;
+    --ink: #e8eaed;
+    --sub: #9aa3af;
+    --rule: #454c57;
+    --rule-light: #2e333a;
+    --accent: #8fb4d9;
+    --accent-soft: #22303e;
+  }
+  :root[data-theme="light"] {
+    --paper: #ffffff;
+    --ink: #1c1e21;
+    --sub: #5c6470;
+    --rule: #c9ced6;
+    --rule-light: #e4e7ec;
+    --accent: #274b6d;
+    --accent-soft: #eef2f7;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+  }
+  .sheet {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+  }
+
+  header.doc {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+  }
+  header.doc h1 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+  }
+  header.doc .doc-no {
+    font-size: 11px;
+    color: var(--sub);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .doc-rule {
+    color: var(--sub);
+    font-size: 12px;
+    margin: 0 0 20px;
+  }
+  .doc-rule strong { color: var(--ink); }
+
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  .meta-row .field { flex: 1 1 200px; }
+  .fill {
+    display: inline-block;
+    min-width: 140px;
+    border-bottom: 1px solid var(--ink);
+    height: 1.2em;
+    vertical-align: bottom;
+  }
+  .fill.wide { min-width: 220px; }
+  .fill.num { min-width: 3em; }
+
+  h2.section {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 5px;
+    margin: 28px 0 14px;
+  }
+
+  .q {
+    margin-bottom: 16px;
+    break-inside: avoid;
+  }
+  .q-head {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .q-num {
+    flex: none;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+    min-width: 2.6em;
+    letter-spacing: 0.02em;
+  }
+  .q-text { font-weight: 700; }
+  .q-hint {
+    margin: 1px 0 6px calc(2.6em + 10px);
+    font-size: 11.5px;
+    color: var(--sub);
+  }
+  .q-hint.key { color: var(--accent); font-weight: 600; }
+  .lines { margin-left: calc(2.6em + 10px); }
+  .lines .ln {
+    border-bottom: 1px solid var(--rule);
+    height: 26px;
+  }
+  .inline-fill {
+    margin-left: calc(2.6em + 10px);
+    padding: 4px 0 2px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  ul.check {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  ul.check li {
+    display: flex;
+    gap: 9px;
+    align-items: baseline;
+  }
+  .box {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    border: 1.4px solid var(--ink);
+    border-radius: 2px;
+    position: relative;
+    top: 1px;
+  }
+
+  .callout {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+  .callout strong { color: var(--accent); }
+
+  .table-wrap { overflow-x: auto; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    border: 1px solid var(--rule);
+    padding: 7px 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: var(--accent-soft);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  td { height: 30px; }
+  tr.example td {
+    color: var(--sub);
+    font-size: 11px;
+    height: auto;
+  }
+
+  .page-break { break-before: page; }
+
+  footer.doc {
+    margin-top: 36px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--sub);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  @media print {
+    :root, :root[data-theme="dark"] {
+      --paper: #ffffff;
+      --ink: #000000;
+      --sub: #444444;
+      --rule: #999999;
+      --rule-light: #cccccc;
+      --accent: #1a3552;
+      --accent-soft: #f0f2f5;
+    }
+    body { font-size: 11.5px; }
+    .sheet { max-width: none; padding: 0; }
+    .no-print { display: none; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="doc">
+    <h1>ヒアリングシート（全11問・約1時間）</h1>
+    <span class="doc-no">PHASE 0 — 1/2</span>
+  </header>
+  <p class="doc-rule">鉄則：<strong>その場で解決策を語らない</strong>（語ると無料コンサルで終わる）。前半で全体像、後半で深掘り。答えは数字で取る。</p>
+
+  <div class="meta-row">
+    <span class="field">相手：<span class="fill wide"></span></span>
+    <span class="field">日時：<span class="fill wide"></span></span>
+  </div>
+  <ul class="check">
+    <li><span class="box"></span>冒頭で録音の許可を取った</li>
+  </ul>
+
+  <h2 class="section">前半 — 全体像</h2>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q1</span><span class="q-text">専門分野と顧客構成は？</span></div>
+    <p class="q-hint">建設業許可／入管／相続／法人設立…顧問は何社くらい？</p>
+    <div class="lines"><div class="ln"></div><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q2</span><span class="q-text">仕事を断ることはありますか？</span></div>
+    <p class="q-hint key">最重要の選別質問。Noなら時間が浮いても売上にならない → 深追いせず次の見込みへ</p>
+    <div class="lines"><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q3</span><span class="q-text">1週間の時間の使い方をざっくり教えてください</span></div>
+    <p class="q-hint">面談・書類作成・役所・移動・事務の割合</p>
+    <div class="lines"><div class="ln"></div><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q4</span><span class="q-text">「またこれか」と一番うんざりする作業は？</span></div>
+    <div class="lines"><div class="ln"></div><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q5</span><span class="q-text">その作業は週何回・1回何分かかりますか？</span></div>
+    <p class="q-hint key">提案の核になる数字</p>
+    <p class="inline-fill">週 <span class="fill num"></span> 回 × 1回 <span class="fill num"></span> 分 ＝ 週 <span class="fill num"></span> 時間</p>
+  </div>
+
+  <h2 class="section">後半 — 深掘り</h2>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q6</span><span class="q-text">顧客から情報や書類をもらう手段は？</span></div>
+    <p class="q-hint">LINE／メール／FAX／紙。混在しているほど自動化の価値が高い</p>
+    <div class="lines"><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q7</span><span class="q-text">資料が揃わないとき、どうやって催促していますか？</span></div>
+    <div class="lines"><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q8</span><span class="q-text">申請書はどう作っていますか？</span></div>
+    <p class="q-hint">Word・Excelのひな形に手作業転記？専用ソフト？</p>
+    <div class="lines"><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q9</span><span class="q-text">許可の更新期限や案件の進捗はどう管理していますか？</span></div>
+    <p class="q-hint">Excel／手帳／記憶</p>
+    <div class="lines"><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q10</span><span class="q-text">過去に効率化ツールを入れて挫折した経験は？何が原因でしたか？</span></div>
+    <p class="q-hint">同じ地雷を踏まないため</p>
+    <div class="lines"><div class="ln"></div><div class="ln"></div></div>
+  </div>
+
+  <div class="q">
+    <div class="q-head"><span class="q-num">Q11</span><span class="q-text">もし週5時間浮いたら、何に使いたいですか？</span></div>
+    <p class="q-hint key">「断っていた仕事を受けられる」という答えが出たら最高の見込み客</p>
+    <div class="lines"><div class="ln"></div></div>
+  </div>
+
+  <div class="callout">
+    <strong>当日のコツ</strong>：「その作業、実際の画面を見せてもらえますか」と<strong>現物を見る</strong>のが最重要（口頭説明と実態は必ずズレる）。聞きながら次ページの業務棚卸し表に書き込む。<br>
+    <strong>終了後48時間以内</strong>：棚卸し表を清書し、お礼と一緒に送る（それ自体が「仕事が丁寧な人」という営業になる）。
+  </div>
+
+  <div class="page-break"></div>
+
+  <header class="doc">
+    <h1>業務棚卸し表</h1>
+    <span class="doc-no">PHASE 0 — 2/2</span>
+  </header>
+  <p class="doc-rule">ヒアリング中にその場で作る。「イライラ度」が高く「頻度 × 時間」が大きい作業が自動化候補の筆頭。</p>
+
+  <div class="meta-row">
+    <span class="field">事務所名：<span class="fill wide"></span></span>
+    <span class="field">作成日：<span class="fill"></span></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>作業名</th>
+          <th>頻度（週◯回）</th>
+          <th>1回の所要時間</th>
+          <th>使うツール</th>
+          <th>イライラ度<br>（1〜5）</th>
+          <th>週合計時間</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="example">
+          <td>例</td><td>顧客への資料催促</td><td>週10回</td><td>10分</td><td>LINE・電話</td><td>5</td><td>約1.7時間</td>
+        </tr>
+        <tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>6</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>7</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>8</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section">集計</h2>
+  <p>
+    定型作業の週合計：約 <span class="fill num"></span> 時間 ＝ 月 <span class="fill num"></span> 時間<br>
+    人件費換算（時給3,000円の場合）：月 約 <span class="fill num"></span> 万円分
+  </p>
+
+  <h2 class="section">自動化候補の見立て（効果が出やすい順）</h2>
+  <ol style="margin: 6px 0; padding-left: 1.4em;">
+    <li>資料回収の自動督促</li>
+    <li>ヒアリングシート → 申請書ドラフトの自動転記（OCR＋LLM）</li>
+    <li>許可更新期限のリマインド</li>
+    <li>面談メモ → 報告書ドラフト生成</li>
+  </ol>
+
+  <h2 class="section">フェーズ0の関門チェック</h2>
+  <ul class="check">
+    <li><span class="box"></span>この相手は「仕事を断るほど忙しい」か？（Q2の答え）</li>
+    <li><span class="box"></span>「週◯時間かかっている定型作業」を<strong>数字つきで</strong>特定できたか？</li>
+  </ul>
+
+  <footer class="doc">
+    <span>AI業務自動化ビジネス — フェーズ0 持ち出しセット</span>
+    <span>印刷はA4縦・2枚</span>
+  </footer>
+
+</div>

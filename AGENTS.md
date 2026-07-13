@@ -45,6 +45,6 @@
 - 新しい開発サイクルを始める際は `/newplan` コマンドを使用する
 
 ## フォルダ用途
-- `.spec/`：設計ドキュメント（PLAN / SPEC / TODO / KNOWLEDGE）
+- `.spec/`：設計ドキュメント（PLAN / SPEC / TODO / KNOWLEDGE）。アーカイブは `.spec/archive/` 配下に格納する
 - `.output/`：成果物・アウトプット（記事MD、コード、資料など完成したもの）
 - `.references/`：参考資料・素材（PDFや画像、URLメモ、サンプルコードなど作業の入力素材）

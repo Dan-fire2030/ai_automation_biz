@@ -13,3 +13,6 @@ dist-ssr
 .idea
 .DS_Store
 .env
+
+# demo03 Excel版の生成物（draft/checkの実行で再生成される）
+.output/demo03_在留資格転記チェック/excel版/output/

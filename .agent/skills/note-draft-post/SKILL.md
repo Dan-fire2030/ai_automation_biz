@@ -6,7 +6,7 @@ description: note記事を「公開直前」まで一発で仕上げるエンド
 # note公開直前まで一発投稿スキル（2026-07-18確立・実績あり）
 
 ローカルの記事MD＋画像を、note.comの下書き（アイキャッチ設定済み・公開ボタンを押すだけの状態）まで自動で仕上げる確立手順。
-実績：note⑤「AIは、毎回『記憶喪失』で出勤してくる」（下書きID: n7ddf80b1e1df）／note⑥「パワポを1枚も触らずに…」（下書きID: n0140f6415550・2026-07-19公開）。
+実績：note⑤「AIは、毎回『記憶喪失』で出勤してくる」（下書きID: n7ddf80b1e1df）／note⑥「パワポを1枚も触らずに…」（下書きID: n0140f6415550・2026-07-19公開）／note⑦「頭の中の『やらなきゃ』を…」（下書きID: ne561036eb96a・2026-07-19公開・3回目の実戦でほぼ手順どおり一発）。
 
 ## 一発実行フロー（原稿確定後、ユーザー確認なしで最後まで走る）
 
@@ -120,4 +120,6 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 | リロードできない | 離脱ダイアログ | navigate force:true |
 | 検証したつもりが未リロード | reload()が黙って失敗 | performance.timeOriginで確認 |
 | 貼った文字がキャプションに混入 | 文末figure直下へのpaste/余白クリックはfigcaptionに入る | 画像実クリック→ArrowRight→Returnで空段落を作ってからpaste |
+| 直前のfigureが消える | 画像直後に作った空段落へのHTML paste時、PMのNodeSelectionが残っているとfigureごと置換される（note⑦で1敗） | paste後に必ず`editor.querySelectorAll('img').length`を数えて前後確認。消えていたら挿入位置の段落末尾に実クリック＋JS選択→1秒wait→画像を再paste |
+| cmd+Downで文末に行くとキャプションに入る | 文書末尾がfigureだとcmd+Downの着地点はfigcaption | 文末が画像のときはcmd+Downを使わず、画像実クリック→ArrowRight→Return |
 | クリック座標がズレる | JSのgetBoundingClientRect座標とスクショ座標はスケールが違う（例:innerWidth=2560 vs スクショ幅1558） | クリック座標はスクショを見て直接決める。JSのwindow.scrollはエディタに打ち消される→computerのscrollアクションを使う |

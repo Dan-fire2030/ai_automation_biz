@@ -16,7 +16,7 @@ description: note記事を「公開直前」まで一発で仕上げるエンド
 2. **note下書き作成（Chrome自動操作）**：手順1〜4（タイトル→本文HTML paste→画像を正位置に挿入→保存）
 3. **アイキャッチ設定**：手順5
 4. **最終検証**：強制リロード→本文画像2枚＋アイキャッチ残存・文字数・画像位置（figureのprev/next）を確認してから完了報告
-5. **ユーザーに残す作業はハッシュタグ設定と公開ボタンだけ**、と報告に明記する
+5. **ユーザーに残す作業はハッシュタグ設定と公開ボタンだけ**、と報告に明記する。ハッシュタグ案が確定している場合（note-brainstormスキル経由など）はコピペできる形で報告に再掲する
 
 完了条件：リロード後のエディタで「タイトル・本文全文・本文画像（正位置）・アイキャッチ」が全て残っていること。トースト表示だけで完了と判断しない。
 
@@ -123,3 +123,4 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 | 直前のfigureが消える | 画像直後に作った空段落へのHTML paste時、PMのNodeSelectionが残っているとfigureごと置換される（note⑦で1敗） | paste後に必ず`editor.querySelectorAll('img').length`を数えて前後確認。消えていたら挿入位置の段落末尾に実クリック＋JS選択→1秒wait→画像を再paste |
 | cmd+Downで文末に行くとキャプションに入る | 文書末尾がfigureだとcmd+Downの着地点はfigcaption | 文末が画像のときはcmd+Downを使わず、画像実クリック→ArrowRight→Return |
 | クリック座標がズレる | JSのgetBoundingClientRect座標とスクショ座標はスケールが違う（例:innerWidth=2560 vs スクショ幅1558） | クリック座標はスクショを見て直接決める。JSのwindow.scrollはエディタに打ち消される→computerのscrollアクションを使う |
+| 分割pasteで境界の段落が結合する（2026-07-20・2箇所で発生） | 本文を複数回に分けてHTML pasteすると、後続pasteの先頭ブロック（<p>や<ul>の最初の<li>）がカーソルのある直前段落にマージされる | paste完了後に各境界の段落を必ず検証（innerTextに次ブロックの文が混ざっていないか）。結合していたら該当範囲（段落〜ul）を実クリック→JSでrange選択→1秒wait→正しいHTMLをpasteすると選択範囲ごと置換で直せる |

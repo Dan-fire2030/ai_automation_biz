@@ -6,7 +6,7 @@ description: note記事を「公開直前」まで一発で仕上げるエンド
 # note公開直前まで一発投稿スキル（2026-07-18確立・実績あり）
 
 ローカルの記事MD＋画像を、note.comの下書き（アイキャッチ設定済み・公開ボタンを押すだけの状態）まで自動で仕上げる確立手順。
-実績：note⑤「AIは、毎回『記憶喪失』で出勤してくる」（下書きID: n7ddf80b1e1df）／note⑥「パワポを1枚も触らずに…」（下書きID: n0140f6415550・2026-07-19公開）／note⑦「頭の中の『やらなきゃ』を…」（下書きID: ne561036eb96a・2026-07-19公開・3回目の実戦でほぼ手順どおり一発）。
+実績：note⑤「AIは、毎回『記憶喪失』で出勤してくる」（下書きID: n7ddf80b1e1df）／note⑥「パワポを1枚も触らずに…」（下書きID: n0140f6415550・2026-07-19公開）／note⑦「頭の中の『やらなきゃ』を…」（下書きID: ne561036eb96a・2026-07-19公開・3回目の実戦でほぼ手順どおり一発）／**note⑩「「大事なメール教えて」は効かない」（nd36f8c8d8f9a・2026-07-21公開・3,729字/画像4枚。全文1回pasteの新方式を確立し、分割pasteを廃止）**。
 
 ## 一発実行フロー（原稿確定後、ユーザー確認なしで最後まで走る）
 
@@ -24,9 +24,9 @@ description: note記事を「公開直前」まで一発で仕上げるエンド
    - **`| tail -N` でパイプしない**（バックグラウンド実行で出力がバッファされ進捗が見えない）
    - プロンプトは Writeツールでscratchpadに書いて `"$(cat ...)"` で渡す（ヒアドキュメントはブロックされることがある）
    - 完了後は必ず `ls` でファイル実在を確認する。**Codexは1枚も作らずに exit 0 で終わることがある**
-2. **note下書き作成（Chrome自動操作）**：手順1〜4（タイトル→本文HTML paste→画像を正位置に挿入→保存）
+2. **note下書き作成（Chrome自動操作）**：手順1〜4（タイトル→**本文を全文1回paste**→画像を正位置に挿入→保存）
 3. **アイキャッチ設定**：手順5
-4. **最終検証**：強制リロード→本文画像2枚＋アイキャッチ残存・文字数・画像位置（figureのprev/next）を確認してから完了報告
+4. **最終検証**：強制リロード→**本文画像が全枚数残っているか＋アイキャッチ＋文字数＋見出し/引用/preの数＋画像位置（figureのprev/next）**を実測してから完了報告
 5. **ユーザーに残す作業はハッシュタグ設定と公開ボタンだけ**、と報告に明記する。ハッシュタグ案が確定している場合（note-brainstormスキル経由など）はコピペできる形で報告に再掲する
 
 完了条件：リロード後のエディタで「タイトル・本文全文・本文画像（正位置）・アイキャッチ」が全て残っていること。トースト表示だけで完了と判断しない。
@@ -69,8 +69,21 @@ dt.setData('text/plain', 'x');
 editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: true, cancelable: true}));
 ```
 
-見出し（目次に反映）・太字・ul/ol・blockquote・hrまで正しく再現される。
-画像位置で本文を分割し、「前半→画像1→中盤→画像2→後半」の順に流し込む。
+見出し（目次に反映）・太字・ul/ol・blockquote・hr・pre/codeまで正しく再現される。
+
+**⚠️本文は「全文を1回でpaste」する。画像位置で分割してはいけない（2026-07-21にnote⑩で新方式を確立・分割方式は廃止）**
+
+- 旧方式（分割paste：前半→画像1→中盤→画像2→後半）は、**後続pasteの先頭ブロックがカーソル直前の段落にマージされる事故が原理的に起きる**（note⑧で2箇所発生・落とし穴表参照）。もう使わない
+- 新方式＝**①タイトル入力 → ②本文を全文1回paste → ③画像を後から正位置に挿入（手順3）**。段落・見出し・引用・コードブロックがそのまま入り、境界の検証作業そのものが不要になる
+- paste直後に構造を数えて検証する（想定値と突き合わせる）：
+  ```js
+  const ed = document.querySelector('.ProseMirror');
+  JSON.stringify({paras: ed.querySelectorAll('p').length, h2: ed.querySelectorAll('h2').length,
+    quotes: ed.querySelectorAll('blockquote').length, pre: ed.querySelectorAll('pre').length,
+    links: ed.querySelectorAll('a').length, chars: ed.innerText.length});
+  ```
+- 長い本文はJS文字列としてそのまま渡せる（note⑩は3,700字を1回で成功）。原稿の「公開前チェックリスト」ブロックと〔画像N：…〕プレースホルダ行は含めない
+- 内部リンクは `<a href="...">` で埋め込む。**過去記事の実URLは `.spec/TODO.md`・`.spec/archive/`・`.agent/handoff/archive/` をgrepすれば拾える**（`grep -rn "note.com/tonaria_ai/n/"`）。仮URLのまま入稿しない
 
 ### 3. 画像挿入（⚠️最重要・1敗した箇所）
 
@@ -99,7 +112,8 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 5. 5秒ほど待ち、`img.src`が`https://assets.st-note.com/...`になったこと＋`closest('figure')`の前後要素で位置を確認
 6. 位置を間違えたら：画像を実クリックで選択→`cmd+x`→正しい位置に実クリック＋選択セット＋1秒wait→`cmd+v`で移動できる
 7. **連続画像はpaste連打でOK（2026-07-19発見）**：画像paste後のカーソルは挿入されたfigureの直後に自動で来るため、1→2→3枚目と続けて貼る場合はクリックし直し不要
-8. **⚠️文末がfigureのときの追記（2026-07-19・1敗）**：文書末尾が画像のとき、HTML pasteや「図の下の余白クリック」は**figcaption（キャプション）に入ってしまう**（text/plainの'x'がキャプション混入。cmd+zで復旧可）。正解＝**画像を実クリックしてノード選択→ArrowRight→Returnで図の直後に空段落を作ってから**pasteする
+8. **コードブロック（pre）直後に画像を入れたいとき（2026-07-21・note⑩で確立）**：preの中にカーソルを置こうとしない。**次の段落を実クリック→JSで `range.collapse(true)`（段落の"先頭"）→1秒wait→paste** すると、preとその段落の間にfigureが入る。副作用としてpreとfigureの間に空段落が1つ残るが、見た目は自然な余白なので**消さない**（消そうとするとpreを壊すリスクがある）
+9. **⚠️文末がfigureのときの追記（2026-07-19・1敗）**：文書末尾が画像のとき、HTML pasteや「図の下の余白クリック」は**figcaption（キャプション）に入ってしまう**（text/plainの'x'がキャプション混入。cmd+zで復旧可）。正解＝**画像を実クリックしてノード選択→ArrowRight→Returnで図の直後に空段落を作ってから**pasteする
 
 ### 4. 保存と検証（トーストを信じない）
 
@@ -134,4 +148,6 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 | 直前のfigureが消える | 画像直後に作った空段落へのHTML paste時、PMのNodeSelectionが残っているとfigureごと置換される（note⑦で1敗） | paste後に必ず`editor.querySelectorAll('img').length`を数えて前後確認。消えていたら挿入位置の段落末尾に実クリック＋JS選択→1秒wait→画像を再paste |
 | cmd+Downで文末に行くとキャプションに入る | 文書末尾がfigureだとcmd+Downの着地点はfigcaption | 文末が画像のときはcmd+Downを使わず、画像実クリック→ArrowRight→Return |
 | クリック座標がズレる | JSのgetBoundingClientRect座標とスクショ座標はスケールが違う（例:innerWidth=2560 vs スクショ幅1558） | クリック座標はスクショを見て直接決める。JSのwindow.scrollはエディタに打ち消される→computerのscrollアクションを使う |
-| 分割pasteで境界の段落が結合する（2026-07-20・2箇所で発生） | 本文を複数回に分けてHTML pasteすると、後続pasteの先頭ブロック（<p>や<ul>の最初の<li>）がカーソルのある直前段落にマージされる | paste完了後に各境界の段落を必ず検証（innerTextに次ブロックの文が混ざっていないか）。結合していたら該当範囲（段落〜ul）を実クリック→JSでrange選択→1秒wait→正しいHTMLをpasteすると選択範囲ごと置換で直せる |
+| 分割pasteで境界の段落が結合する（2026-07-20・2箇所で発生） | 本文を複数回に分けてHTML pasteすると、後続pasteの先頭ブロック（<p>や<ul>の最初の<li>）がカーソルのある直前段落にマージされる | **→2026-07-21に分割paste自体を廃止（手順2）。全文1回pasteなら発生しない**。やむを得ず分割した場合は各境界の段落を検証し、結合していたら該当範囲を実クリック→JSでrange選択→1秒wait→正しいHTMLをpasteして置換 |
+| 保存したのに離脱ダイアログが出続ける／保存ボタンが有効のまま | 画像・アイキャッチ操作の直後は保存が完了しきっていないことがある | **画面右上に✓（チェックマーク）が出て「下書き保存」がグレーアウトするまで押す**。note⑩では3回押して確定した。✓を確認してから `force:true` でリロードする（確認せずforceすると未保存分を失う） |
+| `fetch('/api/v3/notes/<key>')` での保存検証が使えない | Chrome拡張側で cookie/query string を含むレスポンスがブロックされる（`[BLOCKED: Cookie/query string data]`） | API検証は諦め、**強制リロード＋DOM実測**（img数・h2数・pre数・links数・chars・figureのprev/next）で検証する |

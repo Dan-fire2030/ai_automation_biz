@@ -13,9 +13,12 @@
 - **画像ファイル（PNG / JPEG / WebP 等のビットマップ画像：イラスト・アイコン・バナー・写真風画像など）の生成は、必ず Codex CLI に委譲する**。Claude や Gemini 等のエージェントが自前ツールで画像ファイルを生成してはならない
 - 実行コマンドの型（非対話・保存先はプロンプト内に明記する）：
   ```bash
-  codex exec --skip-git-repo-check --sandbox workspace-write "<画像の内容・サイズ・用途と、保存先の絶対パス＋ファイル名を明記したプロンプト>"
+  ~/.npm-global/bin/codex exec --skip-git-repo-check --sandbox workspace-write "<画像の内容・サイズ・用途と、保存先の絶対パス＋ファイル名を明記したプロンプト>"
   ```
+  - **フルパスで呼ぶこと**。`codex` はエージェントのシェルのPATHに無く `command not found` になる（2026-07-21）
+  - **`--dangerously-bypass-approvals-and-sandbox` は使わない**。Claude Codeのauto modeクラシファイアにブロックされて実行できない（2026-07-21）
 - プロンプトには「保存先パス」「ファイル名」「サイズ・形式」を必ず含めること
+- **プロンプト冒頭に「`codex exec` を入れ子で呼ばず、あなた自身がこのセッション内で生成すること」を必ず明記する**。これを書かないとCodexが自分自身を再帰起動し、`failed to initialize in-process app-server client: Operation not permitted (os error 1)` で落ちて**1枚も生成しないまま exit 0（正常終了）で返ってくる**（2026-07-21・実際に1回まるごと空振り）
 - **ユーザーの依頼にこれらの情報（保存先パス・ファイル名・サイズ・形式）が含まれていない場合は、Codexに委譲する前に AskUserQuestion ツールで不足分をユーザーに確認する**（Claude Code以外の同等ツールでは各ツールの質問手段を使う）。妥当なデフォルト案（例：`.output/images/` 配下・内容が分かるファイル名・PNG）を選択肢の先頭に提示してよいが、確認せずに勝手に決めて実行しない
 - 生成後はファイルの存在（`ls` 等）を確認してからユーザーに報告する
 - 対象外：SVG・Mermaid・HTML/CSS などコードとして記述する図解は各エージェントが直接作成してよい

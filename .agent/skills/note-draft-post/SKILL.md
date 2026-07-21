@@ -13,6 +13,17 @@ description: note記事を「公開直前」まで一発で仕上げるエンド
 原稿がOKになったら、以下を**途中で質問せず**一気に実行する（既定値は下記で確立済みのため確認不要）：
 
 1. **画像生成（Codex委譲）**：本文図解 **1600×900**・ヘッダー **1280×670**、いずれもPNG・やわらかフラットイラスト調（クリーム背景＋淡い水色/オレンジ・丸ロボット）。保存先 `note/images/YYYY-MM-DD/`、命名 `◯◯NN_0_ヘッダー.png`／`◯◯NN_1_内容.png`…。2枚目以降は既存PNGの絶対パスをプロンプトに列挙してトーン統一。生成ごとに`sips`でサイズ確認＋Readで文字化け目視
+
+   **⚠️Codex呼び出しの定型（2026-07-21に4つ踏んだ・この形以外で書かない）**：
+   ```bash
+   ~/.npm-global/bin/codex exec --skip-git-repo-check --sandbox workspace-write "$(cat <プロンプトファイル>)"
+   ```
+   - **フルパス必須**。`codex` はPATHに無く `command not found` になる
+   - **`--dangerously-bypass-approvals-and-sandbox` は使用不可**（auto modeクラシファイアにブロックされる）
+   - **プロンプト冒頭に「`codex exec` を入れ子で呼ぶな。あなた自身がこのセッション内で生成しろ」を必ず書く**。書かないとCodexが自分自身を再帰起動して `failed to initialize in-process app-server client: Operation not permitted (os error 1)` で落ち、1枚も生成されないまま正常終了する
+   - **`| tail -N` でパイプしない**（バックグラウンド実行で出力がバッファされ進捗が見えない）
+   - プロンプトは Writeツールでscratchpadに書いて `"$(cat ...)"` で渡す（ヒアドキュメントはブロックされることがある）
+   - 完了後は必ず `ls` でファイル実在を確認する。**Codexは1枚も作らずに exit 0 で終わることがある**
 2. **note下書き作成（Chrome自動操作）**：手順1〜4（タイトル→本文HTML paste→画像を正位置に挿入→保存）
 3. **アイキャッチ設定**：手順5
 4. **最終検証**：強制リロード→本文画像2枚＋アイキャッチ残存・文字数・画像位置（figureのprev/next）を確認してから完了報告

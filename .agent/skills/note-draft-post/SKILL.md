@@ -159,4 +159,5 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 | クリック座標がズレる | JSのgetBoundingClientRect座標とスクショ座標はスケールが違う（例:innerWidth=2560 vs スクショ幅1558） | クリック座標はスクショを見て直接決める。JSのwindow.scrollはエディタに打ち消される→computerのscrollアクションを使う |
 | 分割pasteで境界の段落が結合する（2026-07-20・2箇所で発生） | 本文を複数回に分けてHTML pasteすると、後続pasteの先頭ブロック（<p>や<ul>の最初の<li>）がカーソルのある直前段落にマージされる | **→2026-07-21に分割paste自体を廃止（手順2）。全文1回pasteなら発生しない**。やむを得ず分割した場合は各境界の段落を検証し、結合していたら該当範囲を実クリック→JSでrange選択→1秒wait→正しいHTMLをpasteして置換 |
 | 保存したのに離脱ダイアログが出続ける／保存ボタンが有効のまま | 画像・アイキャッチ操作の直後は保存が完了しきっていないことがある | **画面右上に✓（チェックマーク）が出て「下書き保存」がグレーアウトするまで押す**。note⑩では3回押して確定した。✓を確認してから `force:true` でリロードする（確認せずforceすると未保存分を失う） |
+| アイキャッチ保存後、ボタンがグレーアウトしない（2026-07-25・note⑮） | アイキャッチ設定直後は `disabled: false` のまま見た目も通常のクリック可能状態だったが、実際には保存されていた | **グレーアウトだけを合図にしない**。「右上の✓マーク」と「保存トースト」の**両方**を確認する運用にする（note⑮では2回押して✓＋トーストを両方確認してから `force:true` に進み、リロード後もアイキャッチ残存を確認できた） |
 | `fetch('/api/v3/notes/<key>')` での保存検証が使えない | Chrome拡張側で cookie/query string を含むレスポンスがブロックされる（`[BLOCKED: Cookie/query string data]`） | API検証は諦め、**強制リロード＋DOM実測**（img数・h2数・pre数・links数・chars・figureのprev/next）で検証する |

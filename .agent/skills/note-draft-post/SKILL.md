@@ -134,6 +134,7 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 2. **強制リロードで再検証**：保存済みでも離脱ダイアログ（Leave site?）が出て、JSの`location.reload()`や通常navigateはブロックされる。**navigateツールに`force: true`を付けて**同URLへ（クエリ`?v=N`を変えると確実）
 3. リロード後に `performance.timeOrigin` で本当に再読み込みされたか確認（**過去にリロードされておらず検証が無効だったことがある**）
 4. `.ProseMirror img` の残存と前後要素、文字数を確認して完了報告
+5. **画像枚数は `figure` ではなく `img` の数で数える（2026-07-27 vol.18で判明）**。noteは引用ブロックを `<figure><blockquote>…</blockquote><figcaption></figcaption></figure>` として保存するため、**「今日の1個」の引用が figure として1件カウントされ、画像が1枚多いように見える**。`querySelectorAll('img').length` で判定すること
 
 ### 5. アイキャッチ（ヘッダー画像）の設定（2026-07-18自動化成功）
 

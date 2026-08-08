@@ -102,7 +102,29 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 
 **NG：「＋メニュー→画像」のfile inputへ直接アップロード**。画面には表示されるが**下書き保存に画像が含まれず、リロードで消える**。
 
-**OK：クリップボード画像貼り付けと同じ経路に流す**：
+**OK：クリップボード画像貼り付けと同じ経路に流す**。ただし経路が2つある。**先にどちらか決めてから進むこと**。
+
+---
+
+#### ⚠️ 最初に `file_upload` の生死を1回だけ確かめる（2026-08-08・ここで40分溶かした）
+
+`file_upload` は**セッションによって壊れている**ことがある。壊れているときは、パスの内容に関係なく必ずこのエラーが返る：
+
+```
+Invalid arguments for tool file_upload:
+expected array, received undefined (path: paths)
+```
+
+**`paths` を正しく配列で渡していてもこうなる。パスが原因ではない。**
+2026-08-08に以下すべてで同じエラーを確認した：リポジトリ内の日本語パス／スクラッチパッドのASCII名／`/private/tmp` 配下。
+
+**したがって、パスを変えて試す切り分け実験は全部無駄。1回落ちたら即ルートBへ切り替える。**
+（この日はサブエージェントが「リポジトリ配下のパスだから落ちる」という誤った結論に到達するまで88ツールコール・約15分を使った。誤りである）
+
+- **ルートA** ＝ `file_upload` が生きている → 下の 1〜9
+- **ルートB** ＝ `file_upload` が死んでいる → 「3-B. ルートB」へ
+
+#### ルートA（file_upload が使えるとき）
 
 1. 自作の隠しinputをページに追加：
    ```js
@@ -128,6 +150,42 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 8. **ブロック要素（pre / ul）の直後に画像を入れたいとき（2026-07-21 note⑩で確立、2026-07-26 vol.16でul も同じと確認）**：そのブロックの中にカーソルを置こうとしない。**次の段落を実クリック→JSで `range.collapse(true)`（段落の"先頭"）→1秒wait→paste** すると、ブロックとその段落の間にfigureが入る。副作用としてブロックとfigureの間に空段落が1つ残るが、見た目は自然な余白なので**消さない**（消そうとするとブロックを壊すリスクがある）。**ul（箇条書き）直後でも手順・副作用ともまったく同じ**で、li の数も変化しない（vol.16で4ul/12li が維持されたことを実測）
 9. **⚠️文末がfigureのときの追記（2026-07-19・1敗）**：文書末尾が画像のとき、HTML pasteや「図の下の余白クリック」は**figcaption（キャプション）に入ってしまう**（text/plainの'x'がキャプション混入。cmd+zで復旧可）。正解＝**画像を実クリックしてノード選択→ArrowRight→Returnで図の直後に空段落を作ってから**pasteする
 
+### 3-B. ルートB：OSクリップボード経由（2026-08-08確立・vol.20で実戦成功）
+
+`file_upload` が死んでいるときはこちら。**ページ内にFileを作る必要がなく、noteのCDNへ正規にアップロードされる。**
+
+1. **BashでOSクリップボードにPNGを載せる**（macOS）:
+   ```bash
+   osascript -e 'set the clipboard to (read (POSIX file "/絶対パス/img.png") as «class PNGf»)'
+   osascript -e 'clipboard info'   # 「«class PNGf», <バイト数>」が出れば成功
+   ```
+   日本語ファイル名でも問題ない。**ただしBash側で `ls` の出力をそのままコピーして使う**（手打ち厳禁・既出の教訓）
+2. **挿入先の見出し／段落をビューポート中央へ**（JS）:
+   ```js
+   t.scrollIntoView({ block:'center', behavior:'instant' });  // ← 'instant' 必須
+   ```
+   **`behavior` を省くとsmoothスクロールになり、直後の `getBoundingClientRect()` がスクロール前の座標を返す**（2026-08-08に1回踏んだ。y=3255 が返ってきた）
+3. **スクリーンショットを撮って座標スケールを確認する**。vol.20では **スクショ1470×746 = CSS座標と1:1** だった。過去に記録した0.609倍は環境依存なので**毎回スクショで確かめる**
+4. **見出し／段落の行末を実クリック**。テキストの右端より先（ブロックの右端付近）をクリックしてよい。同じ行の末尾にカーソルが入る
+   - **見出しが2行に折り返しているときは2行目の中央のy**を狙う（`top + h*0.75` あたり）
+5. **カーソル位置をJSで検証してから進む**（ここを飛ばさない）:
+   ```js
+   const s=getSelection(), blk=(s.anchorNode.nodeType===3?s.anchorNode.parentElement:s.anchorNode).closest('h1,h2,h3,p');
+   ({tag:blk.tagName, text:blk.textContent.slice(0,30), offset:s.anchorOffset, len:s.anchorNode.textContent.length})
+   ```
+   `offset === len` なら行末に付いている
+6. **`computer` の `key` アクションで `cmd+v`**。CDN経由の正規アップロードが走り、`assets.st-note.com` のURLになる
+7. `img` の件数と `prev`/`next` の隣接テキストで位置を検証（URL文字列は返さない・既出）
+
+**試して無駄だった代替（もうやらないこと）**：
+
+| 手段 | 結果 |
+|---|---|
+| ローカルHTTPサーバー（`http://127.0.0.1:PORT`）から `fetch` / `<img>` | **ブラウザのプライベートネットワーク遮断でリクエストが飛ばず、Promiseが永久にpending**。rejectすらしない。サーバー側のアクセスログにも残らない |
+| `navigator.clipboard.read()` | **権限プロンプトが出ないまま永久pending**。`document.hasFocus()` は true でも解決しない |
+
+※ どちらも「非同期が動いていないのでは」と疑いたくなるが、`setTimeout` と microtask は正常に発火する。**pendingのまま返ってきたらその経路は諦める**。
+
 ### 4. 保存と検証（トーストを信じない）
 
 1. 「下書き保存」クリック→「下書きを保存しました」トースト確認。**保存成功の✓マークは数秒で消える**（2026-07-25にnote⑮で「保存ボタンがグレーアウトしないことがある」と判明した件の続報・2026-07-26 vol.16）。`disabled`属性はfalseのままなので当てにならない。**スクリーンショットは保存ボタンをクリックした直後に撮る**こと。撮り遅れると✓もトーストも消えていて「保存されていない」と誤判定する
@@ -144,10 +202,41 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 4. **切り抜きダイアログ**が開く（1280×670ぴったりならそのまま）→「保存」ボタンをクリック。**1回で反応しないことがある**ので、スクショでダイアログが閉じたか確認し、閉じてなければもう一度クリック
 5. タイトル上にヘッダーが表示されたら「下書き保存」→強制リロード→アイキャッチ（`rectangle_large`を含むassets.st-note.comのimg）が残っているか確認。**この経路は保存が持続する**（本文画像と違いinput直接アップロードでOK。アイキャッチは記事本文と別管理のため）
 
+#### アイキャッチのルートB（file_upload が死んでいるとき・2026-08-08確立）
+
+アイキャッチのメニューは**ネイティブのファイル選択ダイアログしか入口がない**（`記事にあう画像を選ぶ` はnote側のおすすめ画像で、記事内の画像は選べない）。`file_upload` が使えないときは、**一度本文に貼ってCDNに載せてから回収する**：
+
+1. **ヘッダーPNGを本文の適当な位置に一時的にpaste**（ルートBの手順で。1行目の直後でよい）→ `assets.st-note.com` のURLが得られる。`window.__headerSrc` などに退避しておく
+2. **そのCDN URLを `fetch` して File を作る**。note のCDNはCORSを許可しているので通る：
+   ```js
+   fetch(window.__headerSrc).then(r=>r.blob()).then(b=>{
+     window.__headerFile = new File([b],'header.png',{type:'image/png'});
+   });
+   ```
+   ※ note側で再圧縮されるためバイト数は元より小さくなるが、**ピクセル寸法(1280×670)は保たれる**（vol.20で確認：185KB→63KB・寸法は不変）
+3. **`HTMLInputElement.prototype.click` をフック**してネイティブダイアログを開かせない：
+   ```js
+   const orig = HTMLInputElement.prototype.click;
+   HTMLInputElement.prototype.click = function(){ if(this.type==='file'){ window.__captured=this; return; } return orig.apply(this,arguments); };
+   ```
+   `showPicker` も同様に潰しておく。**復元用に `orig` を保持しておくこと**
+4. カメラアイコン→「画像をアップロード」を実クリック → `window.__captured` にinputが入る（**inputはクリックした瞬間に生成される**ので、事前にDOMを探しても見つからない）
+5. `DataTransfer` でFileを載せて `change` を発火：
+   ```js
+   const dt=new DataTransfer(); dt.items.add(window.__headerFile);
+   window.__captured.files = dt.files;
+   window.__captured.dispatchEvent(new Event('change',{bubbles:true}));
+   ```
+6. 切り抜きダイアログ → 「保存」
+7. **本文に一時的に貼ったヘッダー画像を消す**：画像を実クリック→出てくるツールバーの**ゴミ箱アイコン**をクリック
+8. **フックを元に戻す**（`HTMLInputElement.prototype.click = orig`）。戻さないとユーザーが手で画像を追加できなくなる
+
 ### 6. 後片付け
 
 - 自作input（`#claude-file-src`）を`remove()`
-- `HTMLInputElement.prototype.click`等にパッチを当てた場合はリロードで復元
+- `HTMLInputElement.prototype.click`等にパッチを当てた場合は**その場で復元する**（リロード任せにしない。リロードが離脱ダイアログで弾かれることがあるため）
+- ルートBを使った場合：**OSクリップボードを空にする**（`osascript -e 'set the clipboard to ""'`）、スクラッチパッドにコピーした画像を削除、ローカルサーバーを起動していたら停止
+- 本文に一時的に貼った画像（アイキャッチ回収用）が残っていないか、`img` の数で最終確認する
 
 ## 落とし穴まとめ
 
@@ -171,4 +260,8 @@ editor.dispatchEvent(new ClipboardEvent('paste', {clipboardData: dt, bubbles: tr
 | **⚠️Markdownの表がまるごと1段落に潰れる（2026-07-28・vol.19で初発覚）** | noteのProseMirrorスキーマは `<table>` ノードを持たない。`<table>` を含むHTMLをpasteすると、**全セルのテキストが区切りなしで1つの `<p>` に連結される**（`table:0` になり、読める形では一切残らない） | **原稿に表がある場合は、HTML変換の前にMD側で箇条書き（`<ul><li>`）へ落とす**。1行1項目で「項目名 — 列1：値／列2：値／判定：値」の形にすると表の情報がそのまま入る。事故った場合は該当段落を選択→削除→ul形式でpasteし直す。**表を図解画像にしている記事でも、本文側のテキスト版は必ずulにする** |
 | **画像の挿入位置がh2見出しの直後のとき、空段落が1つ残る（2026-07-28）** | pre/ul直後への挿入と同じ副作用。h2ケースは未記載だったが挙動は同じ | **見た目に影響しないので削除不要**。検証時に段落数がずれても異常ではない |
 | **日本語ファイル名の手打ちで誤字（2026-07-28・vol.19で1敗）** | アップロード時にファイル名をUnicodeエスケープで手打ちし、「頼」(U+983C) を「頃」(U+9803) と誤記してアップロード失敗 | **`ls` の出力文字列をそのままコピーして使う**。手打ちしない。怪しいときは `xxd` でバイト列を確認する |
+| **⚠️`file_upload` が `expected array, received undefined (path: paths)` で必ず落ちる（2026-08-08・vol.20で40分溶かした）** | セッション側の不具合で `paths` 引数が落ちる。**パスの内容とは無関係**（リポジトリ内・スクラッチパッド・ASCII名・日本語名すべて同じ） | **1回落ちたら切り分けをせず、即ルートB（OSクリップボード＋`cmd+v`）へ**。パスを変えて試すのは全部無駄 |
+| **`scrollIntoView` の直後の座標がズレる（2026-08-08）** | `behavior` 省略時にsmoothスクロールになり、`getBoundingClientRect()` がスクロール前の値を返す | **`{ block:'center', behavior:'instant' }` を必ず指定する** |
+| **`fetch`/`clipboard.read()` が永久にpending（2026-08-08）** | `http://127.0.0.1` はプライベートネットワーク遮断でリクエスト自体が飛ばない。`navigator.clipboard.read()` は権限プロンプトが出ないまま止まる。**どちらもrejectしない** | `setTimeout`とmicrotaskは正常に動くので「非同期が壊れている」と誤診しない。**pendingで返ったらその経路は即諦める** |
+| **`navigate force:true` でも離脱ダイアログを抜けられない（2026-08-08）** | 保存済みでもnote側のbeforeunloadが残り、`force` が効かないことがある。`beforeunload` をJSで潰しても抜けられなかった | **新しいタブで同じ編集URLを開いて検証する**（元タブは触らない）。検証後にそのタブを閉じる。これが一番速い |
 | `navigate` の `force` がスキーマに載っていない（2026-07-28） | ToolSearchが返す `navigate` のJSONスキーマには `url` と `tabId` しか出ないが、`force: true` は実際に機能する | **スキーマに無くても `force: true` を渡してよい**。離脱ダイアログを破棄して遷移できる |

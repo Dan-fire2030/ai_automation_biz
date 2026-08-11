@@ -206,7 +206,15 @@ expected array, received undefined (path: paths)
 
 アイキャッチのメニューは**ネイティブのファイル選択ダイアログしか入口がない**（`記事にあう画像を選ぶ` はnote側のおすすめ画像で、記事内の画像は選べない）。`file_upload` が使えないときは、**一度本文に貼ってCDNに載せてから回収する**：
 
-1. **ヘッダーPNGを本文の適当な位置に一時的にpaste**（ルートBの手順で。1行目の直後でよい）→ `assets.st-note.com` のURLが得られる。`window.__headerSrc` などに退避しておく
+1. **ヘッダーPNGを本文の一時的な位置にpaste**（ルートBの手順で）→ `assets.st-note.com` のURLが得られる。`window.__headerSrc` などに退避しておく
+   - **⚠️どのimgを掴むかを位置で決めてはいけない（2026-08-11・vol.21で1敗）**。`querySelectorAll('img')` は**文書順**で返るため、本文画像を先に入れてから文書の先頭付近にヘッダーを一時貼りすると、`imgs[imgs.length-1]` は**本文の最後の画像**を掴む。vol.21では実際にこれで本文画像3枚目（フロー図）がアイキャッチとして保存され、削除して再設定する羽目になった
+   - **正しい掴み方＝寸法で照合する**。ヘッダーは1280×670、本文画像は1200×800など別寸法なので確実に判別できる：
+     ```js
+     const target=[...document.querySelectorAll('.ProseMirror img')]
+       .find(im=>im.naturalWidth===1280 && im.naturalHeight===670);
+     window.__headerSrc = target.src;
+     ```
+   - 寸法が本文画像と被る場合は、**一時貼りを本文の最後尾にしてから** `imgs[imgs.length-1]` を使う（位置を保証してから位置で掴む）
 2. **そのCDN URLを `fetch` して File を作る**。note のCDNはCORSを許可しているので通る：
    ```js
    fetch(window.__headerSrc).then(r=>r.blob()).then(b=>{
@@ -228,7 +236,8 @@ expected array, received undefined (path: paths)
    window.__captured.dispatchEvent(new Event('change',{bubbles:true}));
    ```
 6. 切り抜きダイアログ → 「保存」
-7. **本文に一時的に貼ったヘッダー画像を消す**：画像を実クリック→出てくるツールバーの**ゴミ箱アイコン**をクリック
+7. **本文に一時的に貼ったヘッダー画像を消す**：画像を実クリック→出てくるツールバーの**ゴミ箱アイコン**をクリック。**削除後に空段落が1つ残ることがある**ので、その場で `Backspace` をもう一度押して段落数を元に戻す（2026-08-11）
+7b. **保存したアイキャッチが正しいか、必ず寸法で検証してから次へ進む**（`rectangle_large` を含むimgの `naturalWidth/Height` がヘッダーの寸法と一致するか）。違う画像が入っていたら、アイキャッチ画像右上の**×アイコン**で削除してから1に戻る（削除は正常に機能する・2026-08-11実証）
 8. **フックを元に戻す**（`HTMLInputElement.prototype.click = orig`）。戻さないとユーザーが手で画像を追加できなくなる
 
 ### 6. 後片付け

@@ -26,3 +26,10 @@
 - 日本語はPillowで決定的に描画し、文字化け・欠け・重なりを防ぐ
 - ヘッダーは「吹き出し3つと議事録の行の対応」を新しいモチーフにする
 - `.output/render_minutes01.py` を残し、PNGを `note/images/2026-08-26/` に出力する
+
+## 2026-08-29 note期限記事画像
+
+- 記事「同じ期限をAIに2通りの頼み方で聞いたら、締切が1日ずれました」用の画像4枚を作る
+- `render_minutes01.py` と `render_awareness01.py` の配色・書体・カード・余白を継承する
+- 日本語・表・分岐図をPillowで決定的に描画し、生成AIは使わない
+- `.output/render_deadline01.py` を残し、PNGを `note/images/2026-08-29/` に出力する

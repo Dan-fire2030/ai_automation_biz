@@ -246,6 +246,7 @@ expected array, received undefined (path: paths)
 - `HTMLInputElement.prototype.click`等にパッチを当てた場合は**その場で復元する**（リロード任せにしない。リロードが離脱ダイアログで弾かれることがあるため）
 - ルートBを使った場合：**OSクリップボードを空にする**（`osascript -e 'set the clipboard to ""'`）、スクラッチパッドにコピーした画像を削除、ローカルサーバーを起動していたら停止
 - 本文に一時的に貼った画像（アイキャッチ回収用）が残っていないか、`img` の数で最終確認する
+- **⚠️編集タブを「未保存の変更あり」のまま残さない（2026-09-25・5回連続で残った）**。最後に✓とトーストを確認してから**そのタブを閉じる**。残すと、メインの独立検証が離脱ダイアログで止まり、ユーザーが誤って古い状態で保存する危険がある
 
 ## 落とし穴まとめ
 
@@ -276,3 +277,7 @@ expected array, received undefined (path: paths)
 | `navigate` の `force` がスキーマに載っていない（2026-07-28） | ToolSearchが返す `navigate` のJSONスキーマには `url` と `tabId` しか出ないが、`force: true` は実際に機能する | **スキーマに無くても `force: true` を渡してよい**。離脱ダイアログを破棄して遷移できる |
 | **⚠️複数行の引用が1行目しか引用ブロックに入らない（2026-08-14・入稿に36分かかった主因）** | **noteのblockquoteスキーマは1段落のみ**。`<p>`×3や`<br>`区切りの引用をHTML pasteすると、1行目だけがblockquote内に残り、**2行目以降は無装飾の独立段落としてこぼれ落ちる**（vol.3本目で3箇所とも発生） | blockquote内の`<p>`末尾に実クリック→JSで`collapse(false)`→**キーボードのEnterを実打鍵**（`computer.key: Return`。pasteではない）で同一`<p>`内に`<br>`が入る。続けて`type`で次行を打つ。**「今日の1個」を複数行にする回は毎回起きるので、最初からこの手順で入れる** |
 | **⚠️境界をまたぐRange選択のpaste置換で、中身が黙ってすり替わる（2026-08-14）** | blockquote(figure)＋直後の孤立段落をまたぐ範囲をJS Rangeで選択してHTML pasteすると、ProseMirrorが `TypeError: Cannot read properties of null (reading 'lastChild') at handlePaste` を投げる。**paste自体は例外を出さずに完了し、中身だけがtext/plainのフォールバックにすり替わる**＝ツール側からは成功に見える | **ブロック境界をまたぐ選択でのpaste置換はしない**。やった場合は必ず `read_console_messages` で例外を確認する |
+| **⚠️冒頭の引用ブロックがpaste直後に `<p>` へ分離する（2026-09-25・5回連続）** | 本文先頭がblockquoteだと、HTML pasteで独立した`<p>`＋空のfigureに分かれる | 分離した段落と空figureを削除し、行頭で **`> ` のMarkdownショートカット＋`type`** で作り直す（確実に直る）。**先頭がblockquoteの原稿では毎回起きる前提で、paste直後に最初に確認する** |
+| **⚠️`shift+End` が文書末まで選択する（2026-09-25・本文がほぼ全消えした）** | 既存の選択が非collapsedのまま `shift+End` を打つと、行末ではなく文書末まで選択が伸びることがある | **`shift+End` は使わない**。`Home` でcollapseを確認してから `shift+Right` を文字数ぶん `repeat` する。消えたら即 `cmd+z` |
+| **手打ちの `Return` が段落分割にならず `<br>` になる（2026-09-25）** | 段落を割るつもりのEnterが同一`<p>`内の改行になり、段落が結合する | 段落を割るときは、対象段落をJSのRangeで選択→`<p>…</p><p>…</p>` をtext/htmlでpasteして置換する（ブロック境界はまたがない） |
+| **⚠️アイキャッチ保存後のプレビューの「×」は削除ボタン（2026-09-25・1敗）** | 閉じる／キャンセルに見えるが、押すとヘッダー画像そのものが外れる | **押さない**。保存だけで終える。検証でアイキャッチ（1280×670のimg）の有無を必ず数える |
